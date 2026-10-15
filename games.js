@@ -28,6 +28,7 @@
   G('Uno All Wild!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500 (set your own card values)' });
   G('Uno Show \'Em No Mercy', 'wins', { r: 'Last player standing wins (25 cards and you\'re out) · tap the winner' });
   G('Dos', 'winner', { target: 200, r: 'Round winner scores everyone else\'s cards · first to 200' });
+  G('Uno Golf', 'rounds', { win: 'low', rl: 'Hole', r: 'Clear columns to cut your points · lowest total wins · set how many holes you play' });
   G('Phase 10', 'rounds', { win: 'low', phase: true, r: 'Finish all 10 phases first to win · points break ties, lowest wins',
     q: [['Card 1–9', 5], ['Card 10–12', 10], ['Skip', 15], ['Wild', 25]] });
   G('Skip-Bo', 'winner', { target: 500, r: 'Winner scores 25 plus 5 for each card left in other stockpiles · first to 500',
@@ -88,6 +89,11 @@
   G('Pit', 'rounds', { target: 500, r: 'Corner the market to score that commodity · first to 500' });
   G('Skyjo', 'rounds', { win: 'low', target: 100, r: 'Game ends when someone hits 100 · lowest total wins · ender doubles if not lowest' });
   G('Flip 7', 'rounds', { target: 200, r: 'Bank your cards or bust · Flip 7 bonus +15 · first to 200', q: [['Flip 7 bonus', 15]] });
+  G('Flip 7: With a Vengeance', 'rounds', { target: 200, r: 'Same as Flip 7, but modifiers take points away · first to 200',
+    q: [['Flip 7 bonus', 15], ['−2', -2], ['−4', -4], ['−6', -6], ['−8', -8], ['−10', -10]] });
+  G('Dragonwood', 'sheet', { cats: [{ n: 'Creature points', h: 'add up the shields on the creatures you captured' }, { n: 'Most creatures', chips: [['Most creatures bonus', 3]] }],
+    r: 'Capture creatures for points · +3 for capturing the most · highest total wins' });
+  G('Happy Salmon', 'wins', { r: 'First to get rid of all their cards shouts "FIN-ished!"' });
   G('Cabo', 'rounds', { win: 'low', target: 100, r: 'Lowest hand wins the round · hit exactly 100 and drop to 50 · over 100 ends it' });
   G('Sushi Go!', 'rounds', { rounds: 3, r: '3 rounds · count pudding at the end of round 3 · highest total wins',
     q: [['Tempura pair', 5], ['Sashimi set', 10], ['Squid nigiri', 3], ['Most pudding', 6], ['Least pudding', -6]] });
@@ -131,6 +137,7 @@
   G('Pig (card game)', 'wins', { r: 'Four of a kind, then touch your nose' });
   G('President', 'wins', { r: 'First out becomes President · tap each game\'s President' });
   G('Kemps', 'wins', { r: 'Partners with a secret signal · tap the winning pair' });
+  G('Poopy Diapers', 'wins', { r: 'Tap the winner of each game' });
 
   grp = 'Casino & classic';
   G('Cribbage', 'counter', { target: 121, steps: [1, 2, 3, 4, 6, 8, 12], unit: 'holes', r: 'Peg your hand, crib and play · first to 121' });
@@ -159,6 +166,15 @@
     'Hedbanz', 'Pie Face', 'Don\'t Break the Ice', 'Hi Ho! Cherry-O', 'Chess', 'Checkers', 'Labyrinth', 'Mastermind',
     'Hungry Hungry Hippos', 'Pictionary', 'Uno Stacko', 'Kerplunk', 'Twister']
     .forEach(n => G(n, 'wins', { r: 'Tap the winner of each game · the app keeps the record' }));
+  G('Bounce-Off', 'counter', { target: 3, steps: [1], unit: 'cards', r: 'Bounce your balls into the card\'s pattern first to win the card · first to 3 cards' });
+  G('Topple', 'counter', { target: 100, steps: [1, 3, 10], unit: 'points', r: '3 for finishing a row, 1 for each stack you top · knock pieces off: −10 · first to 100' });
+  G('Super Mario Level Up!', 'rounds', { rounds: 3, r: '3 rounds · score the levels your secret characters reached · most points wins' });
+  G('Wheel of Fortune', 'rounds', { rl: 'Puzzle', r: 'Solve the puzzle to bank that round\'s money · most money wins' });
+  G('Pac-Man: The Board Game', 'winner', { wq: 'Who was Pac-Man?', wl: 'Points they scored as Pac-Man', rl: 'Turn',
+    r: 'Everyone takes a turn as Pac-Man · highest score wins' });
+  G('Tetris', 'sheet', { cats: [{ n: 'Final score' }], r: 'Enter everyone\'s final score · highest wins (or use Just who won for race versions)' });
+  G('I Need a New Butt!', 'wins', { r: 'First to collect a whole new butt wins' });
+  G('Tower Stack', 'wins', { r: 'Don\'t be the one who knocks the tower over · tap the winner' });
   G('The Game of Life', 'sheet', { cats: [{ n: 'Cash' }, { n: 'Retirement / house value' }, { n: 'Life tiles' }, { n: 'Loans', neg: true }], r: 'Count up at retirement · most money wins' });
   G('Operation', 'sheet', { cats: [{ n: 'Money earned' }], r: 'Most money wins' });
   G('Mancala', 'sheet', { cats: [{ n: 'Stones in your store' }], r: 'Most stones wins' });
@@ -211,7 +227,7 @@
   ['Dominion', 'Sagrada', 'Camel Up', 'Small World', 'Lords of Waterdeep', 'Quacks of Quedlinburg', 'Takenoko', 'Scythe',
     'Ark Nova', 'Stone Age', 'Puerto Rico', 'Tokaido', 'Kingdom Builder', 'Sheriff of Nottingham', 'Five Tribes', 'Clank!', 'Castles of Burgundy']
     .forEach(n => G(n, 'sheet', { cats: [{ n: 'Final score' }], r: 'Enter everyone\'s final score · highest wins' }));
-  ['Machi Koro', 'Santorini', 'Hive', 'Power Grid', 'Heat: Pedal to the Metal', 'Codenames: Duet', 'Ticket to Ride: First Journey']
+  ['Machi Koro', 'Santorini', 'Hive', 'Power Grid', 'Heat: Pedal to the Metal', 'Codenames: Duet']
     .forEach(n => G(n, 'wins', { r: 'Tap the winner of each game' }));
 
   // ───────────────────────── DICE & TILES ─────────────────────────
@@ -299,6 +315,34 @@
 
   const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   L.forEach(x => { x.id = slug(x.n); });
+
+  // Junior versions. Most are race-to-finish games, so they track who won.
+  const tap = 'Tap the winner of each game';
+  const JR = {
+    'uno': ['Uno Junior', 'wins', 'First to play all their cards wins'],
+    'skip-bo': ['Skip-Bo Junior', 'wins', 'First to play out their stockpile wins'],
+    'monopoly': ['Monopoly Junior', 'wins', 'When someone runs out of money, the richest player wins'],
+    'clue': ['Clue Junior', 'wins', 'Solve the mystery first'],
+    'scrabble': ['Scrabble Junior', 'rounds', 'Score your words each turn · highest wins', { rl: 'Turn' }],
+    'the-game-of-life': ['The Game of Life Junior', 'wins', tap],
+    'yahtzee': ['Yahtzee Jr.', 'wins', tap],
+    'catan': ['Catan Junior', 'wins', tap],
+    'ticket-to-ride': ['Ticket to Ride: First Journey', 'wins', tap],
+    'carcassonne': ['My First Carcassonne', 'wins', tap],
+    'labyrinth': ['Junior Labyrinth', 'wins', tap],
+    'sequence': ['Sequence for Kids', 'wins', tap],
+    'blokus': ['Blokus Junior', 'wins', tap],
+    'rummikub': ['Rummikub Junior', 'wins', tap],
+    'boggle': ['Boggle Jr.', 'wins', tap],
+    'scattergories': ['Scattergories Junior', 'rounds', '1 point per answer · highest wins'],
+    'taboo': ['Taboo Junior', 'rounds', 'Points for words guessed', { teams: true }],
+    'apples-to-apples': ['Apples to Apples Junior', 'counter', 'Win green apples · set your target', { steps: [1], unit: 'cards' }]
+  };
+  Object.entries(JR).forEach(([id, [n, st, r, extra]]) => {
+    const p = L.find(x => x.id === id); if (!p) return;
+    const j = Object.assign({ n, s: st, r, c: p.c, g: p.g, win: 'high', id: id + '-junior', parent: id, hidden: true }, extra || {});
+    p.jr = j.id; L.push(j);
+  });
   window.TALLY_GAMES = L;
   window.TALLY_CATS = [['card', 'Card'], ['board', 'Board'], ['dice', 'Dice & tiles'], ['party', 'Party & yard']];
 })();

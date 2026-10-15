@@ -25,6 +25,7 @@
 
   const library = () => TALLY_GAMES.concat(S.custom);
   const findDef = id => library().find(g => g.id === id);
+  const shown = () => library().filter(g => !g.hidden);
   const player = id => S.players.find(p => p.id === id);
   const game = id => S.games.find(g => g.id === id);
 
@@ -163,7 +164,7 @@
 
   // ───────── games: start / finish ─────────
   function cfgOf(def) {
-    const keys = ['n', 's', 'c', 'win', 'target', 'rounds', 'names', 'rl', 'q', 'teams', 'calc', 'phase', 'cats', 'special', 'start', 'loseAt', 'steps', 'exact', 'bust', 'tby', 'unit', 'r'];
+    const keys = ['n', 's', 'c', 'win', 'target', 'rounds', 'names', 'rl', 'q', 'teams', 'calc', 'phase', 'cats', 'special', 'start', 'loseAt', 'steps', 'exact', 'bust', 'tby', 'unit', 'r', 'wq', 'wl'];
     const o = {}; keys.forEach(k => { if (def[k] !== undefined) o[k] = JSON.parse(JSON.stringify(def[k])); }); return o;
   }
   function startGame(def, seats, opt) {
@@ -274,7 +275,7 @@
     const q = query.trim().toLowerCase();
     let list, body = '';
     if (q) {
-      list = library().filter(g => (g.n + ' ' + (g.g || '') + ' ' + (g.r || '')).toLowerCase().includes(q));
+      list = shown().filter(g => (g.n + ' ' + (g.g || '') + ' ' + (g.r || '') + ' ' + (g.jr ? findDef(g.jr).n + ' junior' : '')).toLowerCase().includes(q));
       body = list.length ? `<div class="glist">${list.map(gameRow).join('')}</div>` : `<p class="empty">No game called "${esc(query)}" yet.<br><button class="btn" data-act="newcustom" data-name="${esc(query)}">Make "${esc(query)}"</button></p>`;
     } else if (tab === 'mine') {
       const favs = S.favs.map(findDef).filter(Boolean);
@@ -282,15 +283,15 @@
         <div class="lbl">Starred</div>${favs.length ? `<div class="glist">${favs.map(gameRow).join('')}</div>` : '<p class="empty small">Tap the ☆ next to any game to keep it here.</p>'}
         <div class="lbl">Made by you</div>${S.custom.length ? `<div class="glist">${S.custom.map(gameRow).join('')}</div>` : '<p class="empty small">Games you make show up here.</p>'}`;
     } else {
-      list = TALLY_GAMES.filter(g => g.c === tab);
+      list = TALLY_GAMES.filter(g => g.c === tab && !g.hidden);
       const groups = [...new Set(list.map(g => g.g))];
       body = groups.map(gr => `<div class="lbl">${esc(gr)}</div><div class="glist">${list.filter(g => g.g === gr).map(gameRow).join('')}</div>`).join('');
     }
     const tabs = TALLY_CATS.concat([['mine', 'Mine']]);
-    return topbar('Pick a game', plural(library().length, 'game'), back(), `<button class="ico" data-act="newcustom" aria-label="Make a game">+</button>`) +
+    return topbar('Pick a game', plural(shown().length, 'game'), back(), `<button class="ico" data-act="newcustom" aria-label="Make a game">+</button>`) +
       `<main class="body">
         <div class="seg">${tabs.map(([k, l]) => `<button data-act="tab" data-tab="${k}" class="${tab === k && !q ? 'on' : ''}">${l}</button>`).join('')}</div>
-        <input id="search" class="search" type="search" placeholder="Search ${library().length} games…" value="${esc(query)}" autocomplete="off">
+        <input id="search" class="search" type="search" placeholder="Search ${shown().length} games…" value="${esc(query)}" autocomplete="off">
         <div id="results">${body}</div>
         <button class="btn ghost wide" data-act="newcustom">+ Make my own game</button>
       </main>` + tabbar();
@@ -298,7 +299,7 @@
   function gameRow(g) {
     const fav = S.favs.includes(g.id);
     return `<div class="g"><button class="gmain" data-act="pick" data-id="${g.id}"><span class="gn">${esc(g.n)}</span><span class="gr">${esc(g.r || '')}</span></button>
-      <span class="st">${styleName[g.s]}</span>${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
+      ${g.jr ? '<span class="st jr">Jr</span>' : ''}<span class="st">${styleName[g.s]}</span>${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
   }
   const QUICK = [
     { id: 'q-high', n: 'Points every round', s: 'rounds', win: 'high', quick: 1, r: 'Highest total wins · set a target if you like' },
@@ -313,10 +314,10 @@
 
   // ───────── SETUP ─────────
   let setup = null;
-  function openSetup(id) {
+  function openSetup(id, keepSel) {
     const d = findAny(id); if (!d) return;
     const last = S.history.find(h => h.def === id);
-    const sel = last ? last.seats.flatMap(s => s.members || [s.id]).filter(player) : [];
+    const sel = keepSel || (last ? last.seats.flatMap(s => s.members || [s.id]).filter(player) : []);
     setup = { id, sel, win: d.win, target: d.target ?? null, rounds: d.rounds ?? null, start: d.start, teams: d.teams ? 2 : 0, dealer: true, first: null };
     go('setup');
   }
@@ -337,7 +338,8 @@
     const seats = seatsFromSetup();
     return topbar(d.n, styleName[c.s], back('games')) +
       `<main class="body">
-        <div class="card rule"><span>${esc(c.r || '')}</span>${c.s === 'calc' && CALC_INFO[c.calc].hint ? `<span class="muted">${esc(CALC_INFO[c.calc].hint)}</span>` : ''}</div>
+        ${c.jr || c.parent ? `<div class="seg jrseg"><button data-act="junior" data-id="${c.parent || c.id}" class="${c.parent ? '' : 'on'}">Regular</button><button data-act="junior" data-id="${c.jr || c.id}" class="${c.parent ? 'on' : ''}">⭐ Junior</button></div>` : ''}
+        <div class="card rule">${c.parent ? `<b>${esc(c.n)}</b>` : ''}<span>${esc(c.r || '')}</span>${c.s === 'calc' && CALC_INFO[c.calc].hint ? `<span class="muted">${esc(CALC_INFO[c.calc].hint)}</span>` : ''}</div>
         <div class="lbl">Who's playing? <span class="muted">tap in seat order</span></div>
         <div class="ppl pick">${S.players.map(p => { const i = setup.sel.indexOf(p.id); return `<button class="pp ${i >= 0 ? 'sel' : ''}" data-act="seat" data-id="${p.id}">${av(p)}${esc(p.name)}${i >= 0 ? `<b class="ord">${i + 1}</b>` : ''}</button>`; }).join('')}
           <button class="pp add" data-act="addplayer" data-seat="1">+ New player</button></div>
@@ -545,9 +547,9 @@
       g.updated = Date.now(); save(); closeSheet(); render(); checkOver(g);
     };
     openSheet({
-      draw: () => `<div class="sh-h"><b>${esc(roundLabel(g, editing ? ri : g.rounds.length))} · Who went out?</b>${editing ? `<button class="link danger" data-sh="del">Delete</button>` : ''}<button class="ico" data-sh="close" aria-label="Close">✕</button></div>
+      draw: () => `<div class="sh-h"><b>${esc(roundLabel(g, editing ? ri : g.rounds.length))} · ${esc(c.wq || 'Who went out?')}</b>${editing ? `<button class="link danger" data-sh="del">Delete</button>` : ''}<button class="ico" data-sh="close" aria-label="Close">✕</button></div>
         <div class="who">${g.seats.map(p => `<button class="${E.w === p.id ? 'sel' : ''}" data-sh="w" data-id="${p.id}" style="--pc:${p.color}">${av(p, 24)}<span>${esc(p.name)}</span></button>`).join('')}</div>
-        ${padShow(E.e, 'Cards left in everyone else\'s hands')}
+        ${padShow(E.e, c.wl || 'Cards left in everyone else\'s hands')}
         ${c.q ? `<div class="quick">${c.q.map(chip).join('')}</div>` : ''}
         ${padKeys('Save')}`,
       on: (k, el) => {
@@ -933,7 +935,7 @@
       <p class="muted small">Scores live on this phone. Save a backup file before switching phones.</p>
       <div class="two"><button class="btn" data-act="export">Save backup</button><label class="btn" for="imp">Restore backup</label></div>
       <input id="imp" type="file" accept=".json,application/json" hidden>
-      <p class="muted small center">Tally · ${TALLY_GAMES.length} games built in · no ads, no account</p>
+      <p class="muted small center">Tally · ${TALLY_GAMES.filter(g => !g.hidden).length} games built in · no ads, no account</p>
     </main>`;
   }
 
@@ -990,6 +992,7 @@
       case 'tab': tab = el.dataset.tab; query = ''; render(); break;
       case 'quick': tab = 'mine'; query = ''; go('games'); break;
       case 'pick': openSetup(id); break;
+      case 'junior': if (id !== setup.id) { readSetupInputs(); openSetup(id, setup.sel.slice()); } break;
       case 'fav': S.favs = S.favs.includes(id) ? S.favs.filter(x => x !== id) : S.favs.concat(id); save(); refreshResults(); break;
       case 'hidetip': S.settings.hideTip = true; save(); render(); break;
       case 'addplayer': if (V.name === 'setup') readSetupInputs(); addPlayerSheet(p => { if (el.dataset.seat && setup) setup.sel.push(p.id); }); break;
