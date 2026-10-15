@@ -19,6 +19,7 @@
   function load() {
     try { S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { S = blank(); }
     S.settings = Object.assign(blank().settings, S.settings);
+    if (!['system', 'light', 'dark'].includes(S.settings.theme) && !(window.TALLY_THEMES || {})[S.settings.theme]) S.settings.theme = 'system';
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('Could not save — phone storage is full'); } }
 
@@ -210,7 +211,7 @@
 
   function render() {
     const app = $('#app');
-    const fn = { home: vHome, games: vGames, setup: vSetup, play: vPlay, history: vHistory, past: vPast, stats: vStats, settings: vSettings, custom: vCustom }[V.name] || vHome;
+    const fn = { home: vHome, games: vGames, setup: vSetup, play: vPlay, history: vHistory, past: vPast, stats: vStats, settings: vSettings, custom: vCustom, player: vPlayer }[V.name] || vHome;
     app.innerHTML = fn();
     document.body.classList.toggle('playing', V.name === 'play');
     wake(V.name === 'play');
@@ -242,7 +243,7 @@
         </div>
         ${favs.length ? `<div class="lbl">Your games</div><div class="favrow">${favs.map(d => `<button class="fav" data-act="pick" data-id="${d.id}">${esc(d.n)}</button>`).join('')}</div>` : ''}
         <div class="lbl">Players</div>
-        <div class="ppl">${S.players.map(p => `<span class="pp">${av(p)}${esc(p.name)}</span>`).join('')}<button class="pp add" data-act="addplayer">+ Add player</button></div>
+        <div class="ppl">${S.players.map(p => `<button class="pp" data-go="player" data-id="${p.id}">${av(p)}${esc(p.name)}</button>`).join('')}<button class="pp add" data-act="addplayer">+ Add player</button></div>
         ${recent.length ? `<div class="lbl">Recent</div><div class="glist">${recent.map(histRow).join('')}</div>` : ''}
       </main>` + tabbar();
   }
@@ -828,22 +829,105 @@
       <div class="lbl">Wins</div>
       <div class="prog big">${rows.map(x => `<div class="pr"><span>${av(x.p, 20)} ${esc(x.p.name)}</span><span class="trk"><i style="width:${x.wins / mx * 100}%;background:${x.p.color}"></i></span><span>${x.wins}</span></div>`).join('')}</div>
       <div class="tablewrap"><table class="stats"><thead><tr><th>Player</th><th>Played</th><th>Won</th><th>Win %</th><th>Rounds won</th></tr></thead><tbody>
-        ${rows.map(x => `<tr><td>${av(x.p, 18)} ${esc(x.p.name)}</td><td>${x.played}</td><td>${x.wins}</td><td>${x.played ? Math.round(x.wins / x.played * 100) : 0}%</td><td>${x.rounds}</td></tr>`).join('')}
+        ${rows.map(x => `<tr data-go="player" data-id="${x.id}"><td>${av(x.p, 18)} ${esc(x.p.name)}</td><td>${x.played}</td><td>${x.wins}</td><td>${x.played ? Math.round(x.wins / x.played * 100) : 0}%</td><td>${x.rounds}</td></tr>`).join('')}
       </tbody></table></div>
       ${statGame === 'all' ? `<div class="lbl">Most played</div><div class="glist">${most.map(id => `<button class="g" data-act="statgame" data-id="${esc(id)}"><span class="gn">${esc((S.history.find(h => h.def === id) || {}).name)}</span><span class="st">${plural(counts[id], 'game')}</span></button>`).join('')}</div>` : ''}
       ` : '<p class="empty">Finish a game and the wins start counting here.</p>'}
     </main>` + tabbar();
   }
 
+  // ───────── PLAYER PROFILE ─────────
+  // Everything here comes from saved History, so it covers games played before profiles existed.
+  const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] || 'th');
+  function playerRecord(pid) {
+    const results = [], sessions = [];
+    // oldest first, so streaks read in the order games were played
+    S.history.slice().reverse().forEach(h => {
+      const seat = h.seats.find(s => s.id === pid || (s.members || []).includes(pid));
+      if (!seat) return;
+      const others = h.seats.filter(s => s !== seat);
+      if (h.style === 'wins') {
+        (h.game.wlog || []).forEach(w => results.push({ h, won: w === seat.id, beat: w === seat.id ? others : [], lost: others.filter(o => o.id === w) }));
+        sessions.push({ h, seat, wins: h.totals[seat.id] || 0, of: h.played });
+        return;
+      }
+      const win = (h.game.cfg || {}).win === 'low' ? -1 : 1, me = h.totals[seat.id];
+      const place = 1 + h.seats.filter(s => s !== seat && (h.totals[s.id] - me) * win > 0).length;
+      const won = h.winners.includes(seat.id);
+      // finishing order decides head-to-head; winners always count as ahead
+      const ahead = o => won && !h.winners.includes(o.id) ? true : !won && h.winners.includes(o.id) ? false : (me - h.totals[o.id]) * win > 0 ? true : (me - h.totals[o.id]) * win < 0 ? false : null;
+      results.push({ h, won, beat: others.filter(o => ahead(o) === true), lost: others.filter(o => ahead(o) === false) });
+      sessions.push({ h, seat, won, place: won ? 1 : place, of: h.seats.length, score: me, rounds: (h.roundWins || {})[seat.id] || 0, win });
+    });
+    return { results, sessions };
+  }
+  function vPlayer() {
+    const p = player(V.id); if (!p) return vSettings();
+    const { results, sessions } = playerRecord(p.id);
+    const played = results.length, wins = results.filter(r => r.won).length;
+    const rounds = sum(sessions.map(s => s.rounds || 0));
+    // streaks
+    let cur = 0, best = 0, run = 0;
+    results.forEach(r => { run = r.won ? run + 1 : 0; best = Math.max(best, run); });
+    for (let i = results.length - 1; i >= 0 && results[i].won; i--) cur++;
+    // per game
+    const G = {};
+    results.forEach(r => { const k = r.h.def, x = G[k] || (G[k] = { name: r.h.name, played: 0, wins: 0, best: null, win: 1, scored: false }); x.played++; if (r.won) x.wins++; });
+    sessions.forEach(s => { if (s.score == null || s.h.style === 'counter') return; const x = G[s.h.def]; x.scored = true; x.win = s.win; if (x.best == null || (s.score - x.best) * s.win > 0) x.best = s.score; });
+    const games = Object.keys(G).map(k => Object.assign({ id: k }, G[k])).sort((a, b) => b.played - a.played || b.wins - a.wins);
+    const top = games.filter(g => g.played >= 2 && g.wins).sort((a, b) => b.wins / b.played - a.wins / a.played || b.wins - a.wins)[0];
+    // head to head
+    const H = {};
+    results.forEach(r => { r.beat.forEach(o => (o.members || [o.id]).forEach(q => { (H[q] = H[q] || { w: 0, l: 0 }).w++; })); r.lost.forEach(o => (o.members || [o.id]).forEach(q => { (H[q] = H[q] || { w: 0, l: 0 }).l++; })); });
+    const h2h = Object.keys(H).filter(q => q !== p.id && player(q)).map(q => ({ q: player(q), ...H[q] })).sort((a, b) => (b.w + b.l) - (a.w + a.l));
+    const bests = games.filter(g => g.scored && g.best != null).slice(0, 8);
+    const recent = sessions.slice().reverse().slice(0, 12);
+    const stat = (n, l) => `<div class="pstat"><b>${n}</b><span>${l}</span></div>`;
+    return topbar(p.name, played ? plural(played, 'game') + ' played' : 'No games yet', back(V.from || 'home'), `<button class="ico" data-act="editplayer" data-id="${p.id}" aria-label="Edit">✎</button>`) +
+      `<main class="body">
+        <div class="phead">${av(p, 64)}<div><div class="pname">${esc(p.name)}</div>
+          <div class="muted">${cur >= 2 ? `🔥 ${cur} wins in a row` : top ? 'Best at ' + esc(top.name) : played ? 'Keep playing!' : 'Play a game and stats show up here'}</div></div></div>
+        ${played ? `
+        <div class="pstats">${stat(wins, wins === 1 ? 'win' : 'wins')}${stat(played, 'played')}${stat(Math.round(wins / played * 100) + '%', 'win rate')}${stat(rounds, 'rounds won')}${stat(best, 'best streak')}</div>
+        <div class="lbl">Their games</div>
+        <div class="glist">${games.map(g => `<div class="g"><span><span class="gn">${esc(g.name)}</span><span class="gr">${g.wins} of ${plural(g.played, 'game')} won</span></span><span class="trk mini"><i style="width:${g.wins / g.played * 100}%;background:${p.color}"></i></span><span class="st">${Math.round(g.wins / g.played * 100)}%</span></div>`).join('')}</div>
+        ${h2h.length ? `<div class="lbl">Head to head</div><div class="glist">${h2h.map(x => `<button class="g" data-go="player" data-id="${x.q.id}"><span class="h2h">${av(p, 22)}<b>${x.w}</b><span class="muted">–</span><b>${x.l}</b>${av(x.q, 22)}<span class="gn">vs ${esc(x.q.name)}</span></span><span class="st ${x.w > x.l ? 'up' : x.w < x.l ? 'down' : ''}">${x.w > x.l ? 'Ahead' : x.w < x.l ? 'Behind' : 'Even'}</span></button>`).join('')}</div><p class="muted small">Every game you both played: who finished ahead.</p>` : ''}
+        ${bests.length ? `<div class="lbl">Personal bests</div><div class="glist">${bests.map(g => `<div class="g"><span class="gn">${esc(g.name)}</span><span class="st">${g.win < 0 ? 'Lowest' : 'Highest'} ${fmt(g.best)}</span></div>`).join('')}</div>` : ''}
+        <div class="lbl">Recent games</div>
+        <div class="glist">${recent.map(s => { const when = new Date(s.h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const res = s.h.style === 'wins' ? `won ${s.wins} of ${s.of}` : s.won ? 'Won' : ord(s.place) + ' of ' + s.of;
+          const good = s.h.style === 'wins' ? s.wins > 0 : s.won;
+          const mates = s.seat.members ? s.seat.members.filter(m => m !== p.id).map(m => (player(m) || {}).name).filter(Boolean).join(', ') : '';
+          return `<button class="g" data-go="past" data-id="${s.h.id}"><span class="res ${good ? 'w' : 'l'}">${good ? '✓' : '✗'}</span><span class="gtxt"><span class="gn">${esc(s.h.name)}</span><span class="gr">${when} · ${res}${mates ? ' · with ' + esc(mates) : ''}</span></span><span class="st">${s.h.style === 'wins' ? plural(s.of, 'game') : fmt(s.score)}</span></button>`; }).join('')}</div>
+        ` : ''}
+      </main>`;
+  }
+  function editPlayer(p) {
+    let color = p.color;
+    openSheet({
+      draw: () => `<div class="sh-h"><b>Edit player</b><button class="ico" data-sh="close" aria-label="Close">✕</button></div>
+        <div class="row">${av({ name: p.name, color }, 40)}<input id="ep" class="txt" value="${esc(p.name)}" maxlength="20" autocomplete="off"></div>
+        <div class="lbl">Color</div>
+        <div class="swatches">${COLORS.map(c => `<button data-sh="c" data-c="${c}" class="${c === color ? 'on' : ''}" style="background:${c}" aria-label="Color"></button>`).join('')}</div>
+        <button class="btn primary wide" data-sh="ok">Save</button>
+        <button class="link danger wide" data-sh="del">Remove ${esc(p.name)} from players</button>`,
+      on: (k, el) => {
+        if (k === 'c') { const n = $('#ep').value; color = el.dataset.c; drawSheet(); $('#ep').value = n; return; }
+        if (k === 'ok') { const n = $('#ep').value.trim(); if (n) p.name = n; p.color = color; save(); closeSheet(); render(); }
+        if (k === 'del') confirmBox('Remove ' + p.name + ' from your players? Past games keep their scores.', 'Remove', () => { S.players = S.players.filter(x => x.id !== p.id); save(); go('home'); });
+      }
+    });
+  }
+
   // ───────── SETTINGS ─────────
   function vSettings() {
     return topbar('Settings', '', back()) + `<main class="body">
       <div class="lbl">Players</div>
-      <div class="glist">${S.players.map(p => `<div class="g"><button class="av big" data-act="recolor" data-id="${p.id}" style="background:${p.color}" aria-label="Change color">${esc(initial(p.name))}</button><input class="txt flat" data-act="pname" data-id="${p.id}" value="${esc(p.name)}" maxlength="20"><button class="ico" data-act="delplayer" data-id="${p.id}" aria-label="Delete">✕</button></div>`).join('')}</div>
+      <div class="glist">${S.players.map(p => `<button class="g" data-go="player" data-id="${p.id}"><span class="h2h">${av(p, 30)}<span class="gn">${esc(p.name)}</span></span><span class="muted">Profile ›</span></button>`).join('')}</div>
       <button class="btn ghost" data-act="addplayer">+ Add player</button>
-      <p class="muted small">Tap a color dot to change it.</p>
-      <div class="lbl">Look</div>
-      <div class="seg">${[['system', 'Match phone'], ['light', 'Light'], ['dark', 'Dark']].map(([k, l]) => `<button data-act="theme" data-v="${k}" class="${S.settings.theme === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <p class="muted small">Tap a player to see their stats, or to change their name and color.</p>
+      <div class="lbl">Colors</div>
+      <div class="themes">${themeCards()}</div>
       <div class="opt"><span>Keep the screen on while playing</span><button class="tog ${S.settings.awake ? 'on' : ''}" data-act="awake" aria-label="Keep screen on"><i></i></button></div>
       <div class="lbl">Backup</div>
       <p class="muted small">Scores live on this phone. Save a backup file before switching phones.</p>
@@ -897,7 +981,7 @@
     const el = e.target.closest('[data-go],[data-act]'); if (!el) return;
     if (el.dataset.go) {
       if (el.dataset.go === 'games' && !el.closest('.tabbar')) { go('games'); return; }
-      go(el.dataset.go, { id: el.dataset.id }); return;
+      go(el.dataset.go, { id: el.dataset.id, from: el.dataset.go === 'player' ? (V.name === 'player' ? V.from : V.name) : undefined }); return;
     }
     const a = el.dataset.act, id = el.dataset.id;
     const g = V.name === 'play' ? game(V.id) : null;
@@ -939,6 +1023,7 @@
       case 'again': { const h = S.history.find(x => x.id === id); if (!h) break; const d = findDef(h.def) || h.game.cfg; startGame(Object.assign({}, d, h.game.cfg, { id: h.def }), h.seats.map(s => Object.assign({}, s)), { target: h.game.target, trackDealer: h.game.trackDealer, dealer: 0 }); break; }
       case 'delhist': confirmBox('Delete this game from History? Its wins come off the stats too.', 'Delete', () => { S.history = S.history.filter(x => x.id !== id); save(); go('history'); }); break;
       case 'statgame': statGame = id; render(); break;
+      case 'editplayer': { const p = player(id); if (p) editPlayer(p); break; }
       case 'recolor': { const p = player(id); p.color = COLORS[(COLORS.indexOf(p.color) + 1) % COLORS.length]; save(); render(); break; }
       case 'delplayer': { const p = player(id); confirmBox('Remove ' + p.name + ' from your players? Past games keep their scores.', 'Remove', () => { S.players = S.players.filter(x => x.id !== id); save(); render(); }); break; }
       case 'theme': S.settings.theme = el.dataset.v; save(); applyTheme(); render(); break;
@@ -1008,11 +1093,33 @@
     } catch (e) { lock = null; }
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(V.name === 'play'); });
+  // Classic uses the colors in index.html; the others come from themes.js.
+  const CLASSIC = {
+    system: { name: 'Classic', sub: 'Matches your phone' },
+    light: { name: 'Classic light', dark: false, bg: '#f3f1ec', surface: '#ffffff', accent: '#2f5bd3', aink: '#ffffff', ink: '#1c2033' },
+    dark: { name: 'Classic dark', dark: true, bg: '#13151d', surface: '#1f2330', accent: '#7d9cf5', aink: '#10131c', ink: '#eceef5' }
+  };
+  const TOKENS = { bg: 'bg', screen: 'screen', surface: 'surface', cell: 'cell', ink: 'ink', muted: 'muted', line: 'line', accent: 'accent', aink: 'accent-ink', atext: 'atext', soft: 'soft', lead: 'lead', good: 'good', bad: 'bad', gold: 'gold' };
+  function themeCards() {
+    const cur = S.settings.theme;
+    const card = (k, t, look) => `<button data-act="theme" data-v="${k}" class="${cur === k ? 'on' : ''}" style="background:${look.bg};color:${look.ink}">
+      ${cur === k ? `<span class="tick" style="color:${look.ink}">✓</span>` : ''}<span class="tn">${esc(t.name)}</span>
+      <span class="bar" style="background:${look.accent};color:${look.aink}">${t.sub ? esc(t.sub) : 'Score'}</span>
+      <span class="dots"><i style="background:${look.surface}"></i><i style="background:${look.accent}"></i><i style="background:${look.gold || look.accent}"></i><i style="background:${look.ink}"></i></span></button>`;
+    const phoneDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    return card('system', CLASSIC.system, phoneDark ? CLASSIC.dark : CLASSIC.light) + card('light', CLASSIC.light, CLASSIC.light) + card('dark', CLASSIC.dark, CLASSIC.dark) +
+      Object.entries(TALLY_THEMES).map(([k, t]) => card(k, t, t)).join('');
+  }
   function applyTheme() {
-    const t = S.settings.theme;
-    if (t === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
-    const dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-    const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = dark ? '#13151d' : '#f3f1ec';
+    const t = S.settings.theme, root = document.documentElement, fun = TALLY_THEMES[t];
+    Object.values(TOKENS).forEach(v => root.style.removeProperty('--' + v));
+    if (fun) {
+      root.setAttribute('data-theme', fun.dark ? 'dark' : 'light');
+      Object.entries(TOKENS).forEach(([k, v]) => root.style.setProperty('--' + v, fun[k]));
+    } else if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+    else root.removeAttribute('data-theme');
+    const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+    const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = bg || '#f3f1ec';
   }
   let tt;
   function toast(msg) { const el = $('#toast'); el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(() => el.hidden = true, 2200); }
@@ -1021,7 +1128,7 @@
   load();
   if (!S.players.length && !S.history.length && !S.games.length) S.players = [];
   applyTheme();
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(); if (V.name === 'settings') render(); });
   render();
   if (!S.players.length) setTimeout(() => { if (!S.players.length) addPlayerSheet(); }, 400);
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });
