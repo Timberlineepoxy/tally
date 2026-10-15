@@ -15,11 +15,11 @@
 
   // ───────── state ─────────
   let S;
-  function blank() { return { v: 1, players: [], games: [], history: [], custom: [], favs: [], notes: {}, settings: { theme: 'system', awake: true } }; }
+  function blank() { return { v: 1, players: [], games: [], history: [], custom: [], favs: [], notes: {}, settings: { theme: 'system', awake: true, colors: {} } }; }
   function load() {
     try { S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { S = blank(); }
     S.settings = Object.assign(blank().settings, S.settings);
-    if (!['system', 'light', 'dark'].includes(S.settings.theme) && !(window.TALLY_THEMES || {})[S.settings.theme]) S.settings.theme = 'system';
+    if (!['system', 'light', 'dark'].includes(S.settings.theme)) S.settings.theme = 'system';
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('Could not save — phone storage is full'); } }
 
@@ -927,7 +927,7 @@
       <button class="btn ghost" data-act="addplayer">+ Add player</button>
       <p class="muted small">Tap a player to see their stats, or to change their name and color.</p>
       <div class="lbl">Colors</div>
-      <div class="themes">${themeCards()}</div>
+      <div id="colors">${colorPanel()}</div>
       <div class="opt"><span>Keep the screen on while playing</span><button class="tog ${S.settings.awake ? 'on' : ''}" data-act="awake" aria-label="Keep screen on"><i></i></button></div>
       <div class="lbl">Backup</div>
       <p class="muted small">Scores live on this phone. Save a backup file before switching phones.</p>
@@ -1026,7 +1026,10 @@
       case 'editplayer': { const p = player(id); if (p) editPlayer(p); break; }
       case 'recolor': { const p = player(id); p.color = COLORS[(COLORS.indexOf(p.color) + 1) % COLORS.length]; save(); render(); break; }
       case 'delplayer': { const p = player(id); confirmBox('Remove ' + p.name + ' from your players? Past games keep their scores.', 'Remove', () => { S.players = S.players.filter(x => x.id !== id); save(); render(); }); break; }
-      case 'theme': S.settings.theme = el.dataset.v; save(); applyTheme(); render(); break;
+      case 'theme': S.settings.theme = el.dataset.v; save(); applyTheme(); refreshColors(); break;
+      case 'ctab': colorTab = el.dataset.v; refreshColors(); break;
+      case 'cpick': setColor(el.dataset.v); break;
+      case 'creset': S.settings.colors = {}; save(); applyTheme(); refreshColors(); toast('Original colors are back'); break;
       case 'awake': S.settings.awake = !S.settings.awake; save(); render(); break;
       case 'export': exportBackup(); break;
       case 'newcustom': draft = { n: el.dataset.name || '', s: 'rounds', win: 'high', target: null, rounds: null, cats: [], q: [], r: '' }; go('custom'); break;
@@ -1046,16 +1049,21 @@
     }
   });
   document.addEventListener('input', e => {
+    if (e.target.id === 'cany') { S.settings.colors = Object.assign({}, S.settings.colors, { [colorTab]: e.target.value }); applyTheme(); }
     if (e.target.id === 'search') { query = e.target.value; refreshResults(); }
     if (e.target.dataset.act === 'pname') { const p = player(e.target.dataset.id); if (p && e.target.value.trim()) { p.name = e.target.value.trim(); save(); } }
   });
   document.addEventListener('change', e => {
+    if (e.target.id === 'cany') setColor(e.target.value);
     if (e.target.id === 'statgame') { statGame = e.target.value; render(); }
     if (e.target.id === 'imp') importBackup(e.target.files[0]);
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.target.id === 'np' && SH) { e.preventDefault(); SH.on(V.name === 'play' ? 'new' : 'ok'); }
   });
+  function setColor(v) { S.settings.colors = Object.assign({}, S.settings.colors); if (v) S.settings.colors[colorTab] = v; else delete S.settings.colors[colorTab]; save(); applyTheme(); refreshColors(); }
+  // redraw just the color panel so the page doesn't jump while picking
+  function refreshColors() { const el = $('#colors'); if (el) el.innerHTML = colorPanel(); else render(); }
   function refreshResults() {
     // Re-render the list only, so the search box keeps focus while typing.
     const box = $('#results'); if (!box) return render();
@@ -1093,33 +1101,98 @@
     } catch (e) { lock = null; }
   }
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(V.name === 'play'); });
-  // Classic uses the colors in index.html; the others come from themes.js.
-  const CLASSIC = {
-    system: { name: 'Classic', sub: 'Matches your phone' },
-    light: { name: 'Classic light', dark: false, bg: '#f3f1ec', surface: '#ffffff', accent: '#2f5bd3', aink: '#ffffff', ink: '#1c2033' },
-    dark: { name: 'Classic dark', dark: true, bg: '#13151d', surface: '#1f2330', accent: '#7d9cf5', aink: '#10131c', ink: '#eceef5' }
+  // ───────── colors ─────────
+  // The original look lives in index.html (follows the phone, or forced light/dark).
+  // On top of it, the family can pick their own background, text and button colors;
+  // everything else (cards, lines, faded text) is worked out from those three.
+  const BASE = {
+    light: { bg: '#f3f1ec', screen: '#fbfaf7', surface: '#ffffff', cell: '#ece9e2', ink: '#1c2033', muted: '#646879', line: '#dedad1', accent: '#2f5bd3', good: '#18936a', bad: '#c2410c', gold: '#d4961b' },
+    dark: { bg: '#13151d', screen: '#171a24', surface: '#1f2330', cell: '#272c3b', ink: '#eceef5', muted: '#9fa3b5', line: '#2f3445', accent: '#7d9cf5', good: '#3fc290', bad: '#f08a52', gold: '#efb94a' }
   };
-  const TOKENS = { bg: 'bg', screen: 'screen', surface: 'surface', cell: 'cell', ink: 'ink', muted: 'muted', line: 'line', accent: 'accent', aink: 'accent-ink', atext: 'atext', soft: 'soft', lead: 'lead', good: 'good', bad: 'bad', gold: 'gold' };
-  function themeCards() {
-    const cur = S.settings.theme;
-    const card = (k, t, look) => `<button data-act="theme" data-v="${k}" class="${cur === k ? 'on' : ''}" style="background:${look.bg};color:${look.ink}">
-      ${cur === k ? `<span class="tick" style="color:${look.ink}">✓</span>` : ''}<span class="tn">${esc(t.name)}</span>
-      <span class="bar" style="background:${look.accent};color:${look.aink}">${t.sub ? esc(t.sub) : 'Score'}</span>
-      <span class="dots"><i style="background:${look.surface}"></i><i style="background:${look.accent}"></i><i style="background:${look.gold || look.accent}"></i><i style="background:${look.ink}"></i></span></button>`;
+  const SWATCH = {
+    bg: ['#ffffff', '#f7f7f7', '#f3f1ec', '#ece6da', '#e5e7eb', '#d1d5db', '#9ca3af', '#6b7280', '#4b5563', '#374151', '#1f2937', '#111827', '#000000',
+      '#fffbeb', '#fef3c7', '#fde68a', '#fcd34d', '#fbbf24', '#f59e0b', '#d97706', '#b45309', '#78350f', '#451a03',
+      '#fff7ed', '#ffedd5', '#fed7aa', '#fdba74', '#fb923c', '#f97316', '#ea580c', '#9a3412', '#431407',
+      '#fef2f2', '#fecaca', '#fce7f3', '#fbcfe8', '#f5d0fe', '#ede9fe', '#ddd6fe', '#e0e7ff', '#dbeafe', '#bfdbfe', '#e0f2fe', '#cffafe',
+      '#ccfbf1', '#d1fae5', '#bbf7d0', '#dcfce7', '#ecfccb', '#d9f99d', '#fef9c3',
+      '#7f1d1d', '#450a0a', '#500724', '#4a044e', '#3b0764', '#2e1065', '#1e1b4b', '#172554', '#0f172a', '#083344', '#134e4a', '#022c22', '#052e16', '#14532d', '#1a2e05', '#1c1917'],
+    ink: ['#000000', '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6', '#ffffff',
+      '#fffbeb', '#fef3c7', '#fde68a', '#fcd34d', '#fbbf24', '#f59e0b', '#d97706', '#b45309', '#92400e', '#78350f', '#451a03',
+      '#fed7aa', '#fdba74', '#fb923c', '#f97316', '#ea580c', '#c2410c', '#9a3412', '#7c2d12', '#431407',
+      '#fecaca', '#f87171', '#dc2626', '#991b1b', '#7f1d1d', '#fbcfe8', '#f472b6', '#be185d', '#831843',
+      '#e9d5ff', '#c084fc', '#7e22ce', '#581c87', '#3b0764', '#c7d2fe', '#818cf8', '#4338ca', '#312e81',
+      '#bfdbfe', '#60a5fa', '#1d4ed8', '#1e3a8a', '#172554', '#a5f3fc', '#22d3ee', '#0e7490', '#164e63',
+      '#a7f3d0', '#34d399', '#047857', '#064e3b', '#bbf7d0', '#4ade80', '#15803d', '#14532d', '#d9f99d', '#a3e635', '#4d7c0f', '#365314'],
+    accent: ['#ef4444', '#dc2626', '#b91c1c', '#7f1d1d', '#f97316', '#ea580c', '#c2410c', '#9a3412', '#fbbf24', '#f59e0b', '#d97706', '#b45309',
+      '#facc15', '#eab308', '#ca8a04', '#a16207', '#a3e635', '#84cc16', '#65a30d', '#4d7c0f', '#4ade80', '#22c55e', '#16a34a', '#15803d',
+      '#34d399', '#10b981', '#059669', '#047857', '#2dd4bf', '#14b8a6', '#0d9488', '#0f766e', '#22d3ee', '#06b6d4', '#0891b2', '#0e7490',
+      '#38bdf8', '#0ea5e9', '#0284c7', '#0369a1', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8', '#818cf8', '#6366f1', '#4f46e5', '#4338ca',
+      '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9', '#c084fc', '#a855f7', '#9333ea', '#7e22ce', '#e879f9', '#d946ef', '#c026d3', '#a21caf',
+      '#f472b6', '#ec4899', '#db2777', '#be185d', '#fb7185', '#f43f5e', '#e11d48', '#be123c', '#a8a29e', '#78716c', '#57534e', '#292524',
+      '#94a3b8', '#64748b', '#475569', '#1e293b', '#ffffff', '#000000']
+  };
+  const rgb = h => h.replace('#', '').match(/../g).map(x => parseInt(x, 16));
+  const hex = a => '#' + a.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+  const mix = (a, b, t) => { const x = rgb(a), y = rgb(b); return hex(x.map((v, i) => v + (y[i] - v) * t)); };
+  const lum = h => { const c = rgb(h).map(v => v / 255).map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  // nudge a color toward `to` until it reads clearly on `on`
+  const readable = (c, on, to, need = 4.5) => { let t = 0, out = c; while (contrast(out, on) < need && t < 1) { t += 0.05; out = mix(c, to, t); } return out; };
+  function colorTokens() {
+    const c = S.settings.colors || {};
+    if (!c.bg && !c.ink && !c.accent) return null;
     const phoneDark = matchMedia('(prefers-color-scheme: dark)').matches;
-    return card('system', CLASSIC.system, phoneDark ? CLASSIC.dark : CLASSIC.light) + card('light', CLASSIC.light, CLASSIC.light) + card('dark', CLASSIC.dark, CLASSIC.dark) +
-      Object.entries(TALLY_THEMES).map(([k, t]) => card(k, t, t)).join('');
+    const dark = c.bg ? lum(c.bg) < 0.18 : S.settings.theme === 'dark' || (S.settings.theme === 'system' && phoneDark);
+    const b = BASE[dark ? 'dark' : 'light'], t = Object.assign({}, b);
+    if (c.bg) {
+      t.bg = c.bg;
+      t.screen = dark ? mix(c.bg, '#ffffff', .03) : mix(c.bg, '#ffffff', .5);
+      t.surface = dark ? mix(c.bg, '#ffffff', .07) : lum(c.bg) > .85 ? mix(c.bg, '#000000', .02) : mix(c.bg, '#ffffff', .7);
+      t.cell = dark ? mix(c.bg, '#ffffff', .13) : mix(c.bg, '#000000', .07);
+      t.line = dark ? mix(c.bg, '#ffffff', .2) : mix(c.bg, '#000000', .14);
+      if (!c.ink) t.ink = dark ? '#f4f4f6' : '#1c2033';
+    }
+    if (c.ink) t.ink = c.ink;
+    t.muted = readable(mix(t.ink, t.surface, .35), t.surface, t.ink);
+    t.accent = c.accent || b.accent;
+    t.aink = contrast('#ffffff', t.accent) >= contrast('#111111', t.accent) ? '#ffffff' : '#111111';
+    t.atext = readable(t.accent, t.surface, t.ink);
+    t.soft = mix(t.accent, t.surface, .84);
+    t.lead = 'rgba(' + rgb(t.accent).join(',') + ',.13)';
+    t.dark = dark;
+    return t;
   }
+  const TOKENS = { bg: 'bg', screen: 'screen', surface: 'surface', cell: 'cell', ink: 'ink', muted: 'muted', line: 'line', accent: 'accent', aink: 'accent-ink', atext: 'atext', soft: 'soft', lead: 'lead', good: 'good', bad: 'bad', gold: 'gold' };
   function applyTheme() {
-    const t = S.settings.theme, root = document.documentElement, fun = TALLY_THEMES[t];
+    const th = S.settings.theme, root = document.documentElement, t = colorTokens();
     Object.values(TOKENS).forEach(v => root.style.removeProperty('--' + v));
-    if (fun) {
-      root.setAttribute('data-theme', fun.dark ? 'dark' : 'light');
-      Object.entries(TOKENS).forEach(([k, v]) => root.style.setProperty('--' + v, fun[k]));
-    } else if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+    if (t) {
+      root.setAttribute('data-theme', t.dark ? 'dark' : 'light');
+      Object.entries(TOKENS).forEach(([k, v]) => root.style.setProperty('--' + v, t[k]));
+    } else if (th === 'light' || th === 'dark') root.setAttribute('data-theme', th);
     else root.removeAttribute('data-theme');
     const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
     const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = bg || '#f3f1ec';
+  }
+  let colorTab = 'bg';
+  function colorPanel() {
+    const c = S.settings.colors || {}, cur = c[colorTab];
+    const names = { bg: 'Background', ink: 'Text', accent: 'Buttons' };
+    const t = colorTokens(), st = getComputedStyle(document.documentElement);
+    const now = k => (t ? t[k] : st.getPropertyValue('--' + k).trim());
+    const hard = contrast(now('ink'), now('bg')) < 4.5 || contrast(now('ink'), now('surface')) < 4.5;
+    return `<div class="seg">${[['system', 'Match phone'], ['light', 'Light'], ['dark', 'Dark']].map(([k, l]) => `<button data-act="theme" data-v="${k}" class="${S.settings.theme === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <div class="card preview"><span class="pvrow"><b>Dad</b><b class="pvnum">120</b></span><span class="muted small">Uno · round 4</span><span class="pvbtn">+ Round 5</span></div>
+      <div class="lbl">Change the color of</div>
+      <div class="seg">${Object.entries(names).map(([k, l]) => `<button data-act="ctab" data-v="${k}" class="${colorTab === k ? 'on' : ''}"><i class="dot" style="background:${now(k)}"></i>${l}</button>`).join('')}</div>
+      ${hard ? `<p class="warn">⚠ The text is hard to read on this background. Pick a ${lum(now('bg')) < .18 ? 'lighter' : 'darker'} text color.</p>` : ''}
+      <div class="sw">
+        <button class="${!cur ? 'on' : ''} orig" data-act="cpick" data-v="" aria-label="Original">↺</button>
+        ${SWATCH[colorTab].map(h => `<button class="${cur === h ? 'on' : ''}" data-act="cpick" data-v="${h}" style="background:${h}" aria-label="${h}"></button>`).join('')}
+        <label class="any" aria-label="Any color"><input id="cany" type="color" value="${cur || now(colorTab)}"></label>
+      </div>
+      <p class="muted small">↺ puts that one back to the original. The rainbow circle opens every color there is.</p>
+      ${c.bg || c.ink || c.accent ? '<button class="btn ghost wide" data-act="creset">Put all colors back to the original</button>' : ''}`;
   }
   let tt;
   function toast(msg) { const el = $('#toast'); el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(() => el.hidden = true, 2200); }
@@ -1128,7 +1201,7 @@
   load();
   if (!S.players.length && !S.history.length && !S.games.length) S.players = [];
   applyTheme();
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(); if (V.name === 'settings') render(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(); if (V.name === 'settings') refreshColors(); });
   render();
   if (!S.players.length) setTimeout(() => { if (!S.players.length) addPlayerSheet(); }, 400);
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });

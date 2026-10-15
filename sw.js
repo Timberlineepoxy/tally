@@ -1,7 +1,7 @@
 // Tally service worker: lets the app open with no signal.
-const SHELL = 'tally-shell-v2';
+const SHELL = 'tally-shell-v3';
 const MEDIA = 'tally-media-v1';
-const FILES = ['./', 'index.html', 'app.js', 'games.js', 'themes.js', 'manifest.webmanifest',
+const FILES = ['./', 'index.html', 'app.js', 'games.js', 'manifest.webmanifest',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', e => {
