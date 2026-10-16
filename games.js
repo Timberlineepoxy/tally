@@ -28,7 +28,7 @@
   G('Uno All Wild!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500 (set your own card values)' });
   G('Uno Show \'Em No Mercy', 'wins', { r: 'Last player standing wins (25 cards and you\'re out) · tap the winner' });
   G('Dos', 'winner', { target: 200, r: 'Round winner scores everyone else\'s cards · first to 200' });
-  G('Uno Golf', 'rounds', { win: 'low', rl: 'Hole', r: 'Clear columns to cut your points · lowest total wins · set how many holes you play' });
+  G('Uno Golf', 'rounds', { win: 'low', rounds: 9, rl: 'Hole', r: 'Clear matching columns to cut your points · 9 holes · lowest total wins' });
   G('Phase 10', 'rounds', { win: 'low', phase: true, r: 'Finish all 10 phases first to win · points break ties, lowest wins',
     q: [['Card 1–9', 5], ['Card 10–12', 10], ['Skip', 15], ['Wild', 25]] });
   G('Skip-Bo', 'winner', { target: 500, r: 'Winner scores 25 plus 5 for each card left in other stockpiles · first to 500',
@@ -137,7 +137,7 @@
   G('Pig (card game)', 'wins', { r: 'Four of a kind, then touch your nose' });
   G('President', 'wins', { r: 'First out becomes President · tap each game\'s President' });
   G('Kemps', 'wins', { r: 'Partners with a secret signal · tap the winning pair' });
-  G('Poopy Diapers', 'wins', { r: 'Tap the winner of each game' });
+  G('Poopy Diapers', 'sheet', { cats: [{ n: 'Points' }], r: 'Change the most diapers by nap time · most points wins' });
 
   grp = 'Casino & classic';
   G('Cribbage', 'counter', { target: 121, steps: [1, 2, 3, 4, 6, 8, 12], unit: 'holes', r: 'Peg your hand, crib and play · first to 121' });

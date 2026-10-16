@@ -306,7 +306,7 @@
   function gameRow(g) {
     const fav = S.favs.includes(g.id);
     return `<div class="g"><button class="gmain" data-act="pick" data-id="${g.id}"><span class="gn">${esc(g.n)}</span><span class="gr">${esc(g.r || '')}</span></button>
-      ${g.jr ? '<span class="st jr">Jr</span>' : ''}<span class="st">${styleName[g.s]}</span>${S.custom.some(x => x.id === g.id) ? `<button class="star" data-act="editgame" data-id="${g.id}" aria-label="Edit">✎</button>` : ''}${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
+      ${builtInRules(g.id) || g.rules ? '<span class="st rb" title="Has rules">📖</span>' : ''}${g.jr ? '<span class="st jr">Jr</span>' : ''}<span class="st">${styleName[g.s]}</span>${S.custom.some(x => x.id === g.id) ? `<button class="star" data-act="editgame" data-id="${g.id}" aria-label="Edit">✎</button>` : ''}${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
   }
   const QUICK = [
     { id: 'q-high', n: 'Points every round', s: 'rounds', win: 'high', quick: 1, r: 'Highest total wins · set a target if you like' },
@@ -349,7 +349,7 @@
       `<main class="body">
         ${c.jr || c.parent ? `<div class="seg jrseg"><button data-act="junior" data-id="${c.parent || c.id}" class="${c.parent ? '' : 'on'}">Regular</button><button data-act="junior" data-id="${c.jr || c.id}" class="${c.parent ? 'on' : ''}">⭐ Junior</button></div>` : ''}
         <div class="card rule">${c.parent ? `<b>${esc(c.n)}</b>` : ''}<span>${esc(c.r || '')}</span>${c.s === 'calc' && CALC_INFO[c.calc].hint ? `<span class="muted">${esc(CALC_INFO[c.calc].hint)}</span>` : ''}</div>
-        ${c.rules ? `<button class="btn ghost" data-act="rules" data-id="${d.id}">📖 Read the rules</button>` : ''}
+        ${hasRules(c, d.id) ? `<button class="btn ghost" data-act="rules" data-id="${d.id}">📖 How to play</button>` : ''}
         <div class="lbl">Who's playing? <span class="muted">tap in seat order</span></div>
         <div class="ppl pick">${S.players.map(p => { const i = setup.sel.indexOf(p.id); return `<button class="pp ${i >= 0 ? 'sel' : ''}" data-act="seat" data-id="${p.id}">${av(p)}${esc(p.name)}${i >= 0 ? `<b class="ord">${i + 1}</b>` : ''}</button>`; }).join('')}
           <button class="pp add" data-act="addplayer" data-seat="1">+ New player</button></div>
@@ -720,7 +720,7 @@
           ${['rounds', 'winner', 'calc', 'counter'].includes(c.s) && !c.phase ? `<button data-sh="target">◎ Change the target ${t != null ? '(now ' + fmt(t) + ')' : ''}</button>` : ''}
           ${c.s !== 'sheet' && c.s !== 'wins' ? `<button data-sh="dealer">${g.trackDealer ? 'Stop tracking the dealer' : 'Track the dealer'}</button>` : ''}
           <button data-sh="first">🎲 Who goes first?</button>
-          ${c.rules ? '<button data-sh="readrules">📖 Rules</button>' : ''}
+          ${hasRules(c, g.def) ? '<button data-sh="readrules">📖 How to play</button>' : ''}
           <button data-sh="rules">📝 House rules</button>
           <button data-sh="finish">⚑ Finish game now</button>
           <button data-sh="delete" class="danger">Delete this game</button>
@@ -1108,11 +1108,22 @@
     const cats = v('#c-cats'); if (cats !== undefined) draft.cats = cats.split('\n').map(x => x.trim()).filter(Boolean).map(x => /^[−-]/.test(x) ? { n: x.replace(/^[−-]\s*/, ''), neg: true } : { n: x });
     const q = v('#c-quick'); if (q !== undefined) draft.q = q.split('\n').map(x => x.trim().match(/^(.*?)\s*([−-]?\d+)$/)).filter(Boolean).map(m => [m[1] || 'Add', +m[2].replace('−', '-')]);
   }
+  // Built-in games use rules.js; games the family made use their own written rules.
+  const builtInRules = id => (window.TALLY_RULES || {})[id];
+  const hasRules = (c, id) => !!(c.rules || builtInRules(id));
+  function ruleBody(c, defId) {
+    const R = builtInRules(defId);
+    if (!R) return `<div class="rulestext">${c.rules ? esc(c.rules) : '<span class="muted">No rules written yet.</span>'}</div>`;
+    return `<div class="rulesdoc">${R.sections.map(s => `<h4>${esc(s.h)}</h4>${s.p ? `<p>${esc(s.p)}</p>` : ''}${s.li ? `<ul>${s.li.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}`).join('')}
+      ${R.note ? `<div class="rnote"><b>Good to know</b>${esc(R.note)}</div>` : ''}
+      ${(R.links || []).map(([t, u]) => `<a class="rlink" href="${esc(u)}" target="_blank" rel="noopener">${esc(t)} ↗</a>`).join('')}
+      <p class="muted small">Written in our own words. Your game box has the official rules.</p></div>`;
+  }
   function showRules(c, defId) {
     const house = S.notes[defId];
     openSheet({
       draw: () => `<div class="sh-h"><b>📖 ${esc(c.n)}</b><button class="ico" data-sh="close" aria-label="Close">✕</button></div>
-        <div class="rulestext">${c.rules ? esc(c.rules) : '<span class="muted">No rules written yet.</span>'}</div>
+        ${ruleBody(c, defId)}
         ${house ? `<div class="card housenote"><b>House rules</b>${esc(house)}</div>` : ''}
         ${S.custom.some(x => x.id === defId) ? `<button class="btn ghost wide" data-sh="edit">✎ Edit this game</button>` : ''}`,
       on: k => { if (k === 'edit') { closeSheet(); editGame(defId); } }

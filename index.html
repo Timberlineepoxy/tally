@@ -313,6 +313,16 @@ table.stats{width:100%;border-collapse:collapse;font-size:14px;font-variant-nume
 .lap b{font-family:var(--display);font-variant-numeric:tabular-nums;font-size:16px}
 .lap .lm{width:34px;height:34px;border-radius:9px;background:var(--cell);font-weight:800;font-size:18px}
 .lap .lp{height:34px;padding:0 10px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:13px;white-space:nowrap}
+/* rules */
+.rulesdoc{display:flex;flex-direction:column;gap:4px;max-height:66dvh;overflow-y:auto;font-size:16px;line-height:1.5;padding-right:4px}
+.rulesdoc h4{font-family:var(--display);font-size:17px;margin:12px 0 2px}
+.rulesdoc h4:first-child{margin-top:0}
+.rulesdoc p{margin:0}
+.rulesdoc ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.rnote{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:15px}
+.rnote b{display:block}
+.rlink{display:block;margin-top:10px;color:var(--atext);font-weight:700}
+.st.rb{background:transparent;padding:3px 2px}
 /* color picker */
 .preview{background:var(--surface);gap:6px}
 .pvrow{display:flex;justify-content:space-between;align-items:baseline;font-size:17px}
@@ -335,6 +345,7 @@ table.stats{width:100%;border-collapse:collapse;font-size:14px;font-variant-nume
 <div id="toast" hidden role="status"></div>
 <noscript>Tally needs JavaScript turned on.</noscript>
 <script src="games.js"></script>
+<script src="rules.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
