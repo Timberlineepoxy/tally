@@ -145,6 +145,11 @@
       if (tgt != null && ids.some(id => res.totals[id] >= tgt)) { res.over = true; res.winners = pick(ids); res.why = (c.win === 'low' ? 'Someone reached ' : 'Reached ') + fmt(tgt); }
       else if (n && g.rounds.length >= n) { res.over = true; res.winners = pick(ids); res.why = 'All ' + n + ' rounds played'; }
     }
+    if (c.laps) {
+      res.laps = {}; ids.forEach(id => res.laps[id] = (g.laps || {})[id] || 0);
+      const done = ids.filter(id => res.laps[id] >= c.laps);
+      if (done.length) { res.over = true; res.winners = c.lapWin === 'score' ? pick(ids) : done.length > 1 ? pick(done) : done; res.why = (done.length === 1 ? (g.seats.find(s => s.id === done[0]) || {}).name + ' finished ' : 'Finished ') + plural(c.laps, 'lap'); }
+    }
     if (!res.winners) res.winners = res.leaders;
     return res;
   }
@@ -164,7 +169,7 @@
 
   // ───────── games: start / finish ─────────
   function cfgOf(def) {
-    const keys = ['n', 's', 'c', 'win', 'target', 'rounds', 'names', 'rl', 'q', 'teams', 'calc', 'phase', 'cats', 'special', 'start', 'loseAt', 'steps', 'exact', 'bust', 'tby', 'unit', 'r', 'wq', 'wl'];
+    const keys = ['n', 's', 'c', 'win', 'target', 'rounds', 'names', 'rl', 'q', 'teams', 'calc', 'phase', 'cats', 'special', 'start', 'loseAt', 'steps', 'exact', 'bust', 'tby', 'unit', 'r', 'wq', 'wl', 'laps', 'lapWin', 'rules', 'lapsOnly'];
     const o = {}; keys.forEach(k => { if (def[k] !== undefined) o[k] = JSON.parse(JSON.stringify(def[k])); }); return o;
   }
   function startGame(def, seats, opt) {
@@ -172,6 +177,7 @@
     if (opt.win) cfg.win = opt.win;
     if (opt.rounds !== undefined) cfg.rounds = opt.rounds;
     if (opt.start !== undefined) cfg.start = opt.start;
+    if (opt.laps) cfg.laps = opt.laps;
     const g = { id: uid(), def: def.id, cfg, seats, rounds: [], cells: {}, cnt: {}, wlog: [], dealer: opt.dealer ?? 0, trackDealer: !!opt.trackDealer, started: Date.now(), updated: Date.now() };
     if (opt.target !== undefined) g.target = opt.target;
     seats.forEach(s => g.cnt[s.id] = cfg.start || 0);
@@ -181,7 +187,7 @@
   function finishGame(g, andThen) {
     const r = compute(g);
     const played = g.cfg.s === 'wins' ? g.wlog.length : 1;
-    if (g.cfg.s === 'wins' ? g.wlog.length : (g.rounds.length || Object.keys(g.cells).length || g.seats.some(s => g.cnt[s.id] !== (g.cfg.start || 0)))) {
+    if (g.cfg.s === 'wins' ? g.wlog.length : (g.rounds.length || Object.keys(g.cells).length || g.seats.some(s => g.cnt[s.id] !== (g.cfg.start || 0)) || Object.values(g.laps || {}).some(Boolean))) {
       S.history.unshift({ id: g.id, def: g.def, name: g.cfg.n, style: g.cfg.s, date: Date.now(), seats: g.seats, totals: r.totals, winners: g.cfg.s === 'wins' ? [] : r.winners,
         roundWins: r.roundWins, played, rounds: g.rounds.length, game: g });
     }
@@ -229,7 +235,7 @@
       const t = targetOf(g);
       return `<button class="card cont" data-go="play" data-id="${g.id}"><span class="k">Pick up where you left off</span><span class="v">${esc(g.cfg.n)} · ${esc(where)}</span><span class="d">${lead}${t != null ? ' · ' + (g.cfg.s === 'counter' && (g.cfg.start || 0) > t ? 'down to ' : 'to ') + fmt(t) : ''}</span></button>`;
     }).join('');
-    const favs = S.favs.map(findDef).filter(Boolean);
+    const favs = [...new Set(S.favs.concat(S.custom.map(x => x.id)))].map(findDef).filter(Boolean);
     const recent = S.history.slice(0, 4);
     return topbar('Tally', greet(), '', `<button class="ico" data-go="settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>`) +
       `<main class="body">
@@ -240,6 +246,7 @@
           <button class="bigbtn" data-act="lib" data-tab="board"><span class="suits" style="color:var(--p3)">▦♜</span><span class="n">Board games</span><span class="d">Catan, Ticket to Ride…</span></button>
           <button class="bigbtn" data-act="lib" data-tab="dice"><span class="suits" style="color:var(--p4)">⚄⚂</span><span class="n">Dice & tiles</span><span class="d">Yahtzee, Farkle, dominoes…</span></button>
           <button class="bigbtn" data-act="lib" data-tab="party"><span class="suits" style="color:var(--p2)">◎✦</span><span class="n">Party & yard</span><span class="d">Cornhole, mini golf…</span></button>
+          <button class="bigbtn wide mk" data-act="newcustom"><span><span class="n">Make my own game</span><span class="d">Your rules, your scoring, laps if you want</span></span><span class="ico">✎</span></button>
           <button class="bigbtn wide" data-act="quick"><span><span class="n">Quick score</span><span class="d">Any game · just names and numbers</span></span><span class="ico">+</span></button>
         </div>
         ${favs.length ? `<div class="lbl">Your games</div><div class="favrow">${favs.map(d => `<button class="fav" data-act="pick" data-id="${d.id}">${esc(d.n)}</button>`).join('')}</div>` : ''}
@@ -299,7 +306,7 @@
   function gameRow(g) {
     const fav = S.favs.includes(g.id);
     return `<div class="g"><button class="gmain" data-act="pick" data-id="${g.id}"><span class="gn">${esc(g.n)}</span><span class="gr">${esc(g.r || '')}</span></button>
-      ${g.jr ? '<span class="st jr">Jr</span>' : ''}<span class="st">${styleName[g.s]}</span>${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
+      ${g.jr ? '<span class="st jr">Jr</span>' : ''}<span class="st">${styleName[g.s]}</span>${S.custom.some(x => x.id === g.id) ? `<button class="star" data-act="editgame" data-id="${g.id}" aria-label="Edit">✎</button>` : ''}${g.quick ? '' : `<button class="star ${fav ? 'on' : ''}" data-act="fav" data-id="${g.id}" aria-label="Star">${fav ? '★' : '☆'}</button>`}</div>`;
   }
   const QUICK = [
     { id: 'q-high', n: 'Points every round', s: 'rounds', win: 'high', quick: 1, r: 'Highest total wins · set a target if you like' },
@@ -318,7 +325,7 @@
     const d = findAny(id); if (!d) return;
     const last = S.history.find(h => h.def === id);
     const sel = keepSel || (last ? last.seats.flatMap(s => s.members || [s.id]).filter(player) : []);
-    setup = { id, sel, win: d.win, target: d.target ?? null, rounds: d.rounds ?? null, start: d.start, teams: d.teams ? 2 : 0, dealer: true, first: null };
+    setup = { id, sel, win: d.win, target: d.target ?? null, rounds: d.rounds ?? null, start: d.start, laps: d.laps, teams: d.teams ? 2 : 0, dealer: true, first: null };
     go('setup');
   }
   function vSetup() {
@@ -329,17 +336,20 @@
     if (c.s !== 'wins' && c.s !== 'counter' && !c.phase) opt.push(`<div class="opt"><span>Who wins</span><div class="seg sm"><button data-act="win" data-v="high" class="${setup.win !== 'low' ? 'on' : ''}">Highest</button><button data-act="win" data-v="low" class="${setup.win === 'low' ? 'on' : ''}">Lowest</button></div></div>`);
     if ((isRounds && !c.phase) || c.s === 'counter') opt.push(`<div class="opt"><label for="o-target">${c.s === 'counter' && (c.start || 0) > (c.target ?? 1e9) ? 'Count down to' : 'Play to'}</label><input id="o-target" class="num" inputmode="numeric" placeholder="${c.tby ? 'by players' : 'no limit'}" value="${setup.target ?? ''}"></div>`);
     if (isRounds && c.rounds !== 'wizard' && !c.phase) opt.push(`<div class="opt"><label for="o-rounds">Number of rounds</label><input id="o-rounds" class="num" inputmode="numeric" placeholder="no limit" value="${setup.rounds ?? ''}"></div>`);
-    if (c.s === 'counter') opt.push(`<div class="opt"><label for="o-start">Everyone starts at</label><input id="o-start" class="num" inputmode="numeric" value="${setup.start ?? 0}"></div>`);
+    if (c.laps) opt.push(`<div class="opt"><label for="o-laps">Laps to finish</label><input id="o-laps" class="num" inputmode="numeric" value="${setup.laps ?? c.laps}"></div>`);
+    if (c.s === 'counter' && !c.lapsOnly) opt.push(`<div class="opt"><label for="o-start">Everyone starts at</label><input id="o-start" class="num" inputmode="numeric" value="${setup.start ?? 0}"></div>`);
     if (c.s !== 'sheet' && c.s !== 'wins' && c.s !== 'counter') opt.push(`<div class="opt"><span>Track the dealer</span><button class="tog ${setup.dealer ? 'on' : ''}" data-act="dealer" aria-label="Track the dealer"><i></i></button></div>`);
     if (c.teams || setup.teams) opt.push(`<div class="opt"><span>Teams</span><div class="seg sm">${[0, 2, 3].map(n => `<button data-act="teams" data-v="${n}" class="${setup.teams === n ? 'on' : ''}">${n ? n + ' teams' : 'No teams'}</button>`).join('')}</div></div>`);
     else if (c.s !== 'sheet') opt.push(`<div class="opt"><span>Teams</span><div class="seg sm">${[0, 2, 3].map(n => `<button data-act="teams" data-v="${n}" class="${setup.teams === n ? 'on' : ''}">${n ? n + ' teams' : 'No teams'}</button>`).join('')}</div></div>`);
 
     const chosen = setup.sel.map(player).filter(Boolean);
     const seats = seatsFromSetup();
-    return topbar(d.n, styleName[c.s], back('games')) +
+    const mine = S.custom.some(x => x.id === d.id);
+    return topbar(d.n, c.lapsOnly ? 'Laps' : styleName[c.s], back('games'), mine ? `<button class="ico" data-act="editgame" data-id="${d.id}" aria-label="Edit game">✎</button>` : '') +
       `<main class="body">
         ${c.jr || c.parent ? `<div class="seg jrseg"><button data-act="junior" data-id="${c.parent || c.id}" class="${c.parent ? '' : 'on'}">Regular</button><button data-act="junior" data-id="${c.jr || c.id}" class="${c.parent ? 'on' : ''}">⭐ Junior</button></div>` : ''}
         <div class="card rule">${c.parent ? `<b>${esc(c.n)}</b>` : ''}<span>${esc(c.r || '')}</span>${c.s === 'calc' && CALC_INFO[c.calc].hint ? `<span class="muted">${esc(CALC_INFO[c.calc].hint)}</span>` : ''}</div>
+        ${c.rules ? `<button class="btn ghost" data-act="rules" data-id="${d.id}">📖 Read the rules</button>` : ''}
         <div class="lbl">Who's playing? <span class="muted">tap in seat order</span></div>
         <div class="ppl pick">${S.players.map(p => { const i = setup.sel.indexOf(p.id); return `<button class="pp ${i >= 0 ? 'sel' : ''}" data-act="seat" data-id="${p.id}">${av(p)}${esc(p.name)}${i >= 0 ? `<b class="ord">${i + 1}</b>` : ''}</button>`; }).join('')}
           <button class="pp add" data-act="addplayer" data-seat="1">+ New player</button></div>
@@ -367,6 +377,7 @@
     const t = num('#o-target'); if (t !== undefined) setup.target = t;
     const r = num('#o-rounds'); if (r !== undefined) setup.rounds = r;
     const s = num('#o-start'); if (s !== undefined) setup.start = s ?? 0;
+    const lp = num('#o-laps'); if (lp !== undefined) setup.laps = lp && lp > 0 ? Math.round(lp) : null;
     const n = $('#o-note'); if (n) { const d = findAny(setup.id); if (n.value.trim()) S.notes[d.id] = n.value.trim(); else delete S.notes[d.id]; save(); }
   }
 
@@ -380,13 +391,21 @@
     if (c.s === 'wins') sub = plural(g.wlog.length, 'game') + ' played';
     if (c.s === 'sheet') sub = c.win === 'low' ? 'Lowest total wins' : 'Highest total wins';
     if (c.phase) sub = 'Phase 10 · ' + roundLabel(g, g.rounds.length).toLowerCase();
+    if (c.laps) sub = plural(c.laps, 'lap') + ' · ' + sub;
     const head = topbar(c.n, sub, back(), `<button class="ico" data-act="undo" aria-label="Undo">↶</button><button class="ico" data-act="menu" aria-label="Game menu">⋯</button>`);
     let body;
     if (['rounds', 'winner', 'calc'].includes(c.s)) body = playGrid(g, r);
     else if (c.s === 'sheet') body = playSheet(g, r);
     else if (c.s === 'counter') body = playCounter(g, r);
     else body = playWins(g, r);
-    return head + body;
+    return head + (c.laps ? lapBar(g, r) : '') + body;
+  }
+  function lapBar(g, r) {
+    const n = g.cfg.laps;
+    return `<div class="lapbar"><div class="lbl">Laps · ${n} to finish</div><div class="laps">${g.seats.map(s => {
+      const v = r.laps[s.id];
+      return `<div class="lap" style="--pc:${s.color}">${av(s, 22)}<span class="ln">${esc(s.name)}</span><span class="lpips">${Array.from({ length: Math.min(n, 12) }, (_, i) => `<i class="${i < v ? 'on' : ''}"></i>`).join('')}</span><b>${v}/${n}</b>
+        <button class="lm" data-act="lap" data-id="${s.id}" data-d="-1" aria-label="Take back a lap">−</button><button class="lp" data-act="lap" data-id="${s.id}" data-d="1">+1 lap</button></div>`; }).join('')}</div></div>`;
   }
   const crown = '<span class="crown">♛</span>';
   function seatHead(g, s, i, r) {
@@ -701,6 +720,7 @@
           ${['rounds', 'winner', 'calc', 'counter'].includes(c.s) && !c.phase ? `<button data-sh="target">◎ Change the target ${t != null ? '(now ' + fmt(t) + ')' : ''}</button>` : ''}
           ${c.s !== 'sheet' && c.s !== 'wins' ? `<button data-sh="dealer">${g.trackDealer ? 'Stop tracking the dealer' : 'Track the dealer'}</button>` : ''}
           <button data-sh="first">🎲 Who goes first?</button>
+          ${c.rules ? '<button data-sh="readrules">📖 Rules</button>' : ''}
           <button data-sh="rules">📝 House rules</button>
           <button data-sh="finish">⚑ Finish game now</button>
           <button data-sh="delete" class="danger">Delete this game</button>
@@ -712,6 +732,7 @@
         else if (k === 'target') askNumber('Play to', t, v => { snap(g); g.target = v; save(); render(); checkOver(g); });
         else if (k === 'dealer') { g.trackDealer = !g.trackDealer; save(); closeSheet(); render(); }
         else if (k === 'first') { closeSheet(); pickFirst(g.seats, i => { if (g.trackDealer) { g.dealer = ((i - g.rounds.length) % g.seats.length + g.seats.length) % g.seats.length; save(); render(); } }); }
+        else if (k === 'readrules') { closeSheet(); showRules(c, g.def); }
         else if (k === 'rules') askText('House rules for ' + c.n, S.notes[g.def] || '', v => { if (v) S.notes[g.def] = v; else delete S.notes[g.def]; save(); render(); });
         else if (k === 'finish') { closeSheet(); showOver(g); }
         else if (k === 'delete') confirmBox('Delete this game? It won\'t be saved to History.', 'Delete', () => { S.games = S.games.filter(x => x.id !== g.id); save(); go('home'); });
@@ -940,22 +961,138 @@
   }
 
   // ───────── CUSTOM GAME ─────────
+  // A family game has a name, its own written rules, a way of scoring, and (optionally) laps.
+  // "Create my own" builds the scoring from parts; the presets are the five common shapes.
   let draft = null;
+  const PRESETS = [['rounds', 'Everyone scores each round'], ['winner', 'Round winner takes the points'], ['sheet', 'Score sheet with categories'], ['counter', 'Counter with + and −'], ['wins', 'Just who won']];
+  const POINTS = [['round', 'Everyone scores each round'], ['winner', 'Only the round winner scores'], ['end', 'Score boxes at the end'], ['tap', 'Plus and minus any time'], ['none', 'No points']];
+  const PT_STYLE = { round: 'rounds', winner: 'winner', end: 'sheet', tap: 'counter', none: 'wins' };
+  function newDraft(name) { return { n: name || '', mode: 'preset', s: 'rounds', pts: 'round', win: 'high', target: null, rounds: null, start: 0, stepsText: '1, 5, 10', cats: [], q: [], r: '', rules: '', lapsOn: false, lapsN: 3, lapWin: 'first' }; }
+  function draftFromDef(d) {
+    const x = Object.assign(newDraft(), JSON.parse(JSON.stringify(d)));
+    if (x.lapsOnly) { x.s = 'wins'; x.pts = 'none'; delete x.target; x.target = x.tgtSaved ?? null; }
+    if (d.steps) x.stepsText = d.steps.join(', ');
+    if (x.rAuto) x.r = '';
+    return x;
+  }
+  function defFromDraft(dr) {
+    const d = { id: dr.id || 'my-' + uid(), n: dr.n, c: 'mine', g: 'Made by you', win: dr.win, rules: dr.rules || '',
+      mode: dr.mode, pts: dr.pts, lapsOn: dr.lapsOn, lapsN: dr.lapsN, lapWin: dr.lapWin, stepsText: dr.stepsText };
+    d.s = dr.mode === 'build' ? PT_STYLE[dr.pts] : dr.s;
+    if (['rounds', 'winner', 'counter'].includes(d.s) && dr.target != null) d.target = dr.target;
+    if (['rounds', 'winner'].includes(d.s) && dr.rounds != null) d.rounds = dr.rounds;
+    if (['rounds', 'winner'].includes(d.s) && dr.q && dr.q.length) d.q = dr.q;
+    if (d.s === 'sheet') d.cats = dr.cats && dr.cats.length ? dr.cats : [{ n: 'Final score' }];
+    if (d.s === 'counter') {
+      d.start = dr.start || 0;
+      const st = String(dr.stepsText || '').split(/[ ,]+/).map(Number).filter(n => n > 0);
+      d.steps = st.length ? st.slice(0, 8) : [1, 5, 10];
+    }
+    if (dr.lapsOn && dr.lapsN > 0) {
+      if (d.s === 'wins') {
+        // laps only: a lap counter where the first to finish wins
+        Object.assign(d, { s: 'counter', start: 0, target: dr.lapsN, steps: [1], unit: 'laps', lapsOnly: true, tgtSaved: dr.target });
+      } else { d.laps = dr.lapsN; d.lapWin = dr.lapWin; }
+    }
+    const bits = [];
+    if (d.lapsOnly) bits.push('First around the board ' + plural(dr.lapsN, 'time') + ' wins');
+    else {
+      if (d.s !== 'wins') bits.push((d.win === 'low' ? 'Lowest' : 'Highest') + ' total wins');
+      if (d.target != null) bits.push('to ' + fmt(d.target));
+      if (d.rounds) bits.push(plural(d.rounds, 'round'));
+      if (d.laps) bits.push(plural(d.laps, 'lap') + (d.lapWin === 'score' ? ', then best score wins' : ' to win'));
+      if (d.s === 'wins') bits.push('tap the winner');
+    }
+    d.rAuto = !(dr.r && dr.r.trim());
+    d.r = d.rAuto ? bits.join(' · ') : dr.r.trim();
+    return d;
+  }
+
+  // Reads the family's written rules and suggests the scoring. Offline, so it only
+  // looks for clear phrases ("first to 300", "lowest score wins", "3 laps", "Wild cards are worth 50").
+  const WORDN = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fifteen: 15, twenty: 20, fifty: 50, hundred: 100 };
+  const NUM = '(\\d[\\d,]*|' + Object.keys(WORDN).join('|') + ')';
+  const toN = x => WORDN[x] ?? +String(x).replace(/,/g, '');
+  function readRules(text) {
+    const T = ' ' + String(text || '').toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ') + ' ';
+    const s = { found: [] };
+    let m;
+    if (/(lowest|fewest|least)( total)?( score| points?)?( at the end)? (wins|is the winner)|low score wins/.test(T)) { s.win = 'low'; s.found.push('Lowest score wins'); }
+    else if (/(highest|most)( total)?( score| points?)( at the end)? (wins|is the winner)|highest wins|most points wins/.test(T)) { s.win = 'high'; s.found.push('Highest score wins'); }
+    if ((m = T.match(new RegExp(NUM + ' (laps?|times around)'))) || (m = T.match(new RegExp('around the board ' + NUM + ' times')))) {
+      s.laps = toN(m[1]); s.found.push(plural(s.laps, 'lap') + ' around the board');
+    }
+    m = T.match(new RegExp('(?:first (?:player |person |one |team )?to (?:reach |get |score |hit )?|play(?:ed|ing)? (?:up )?to |race to |game ends (?:at|when someone reaches) |until (?:someone|a player) (?:reaches|gets|scores) )(?<n>' + NUM.slice(1, -1) + ')(?! (?:laps?|times|rounds?|cards?))'));
+    if (m && toN(m.groups.n) > 0) { s.target = toN(m.groups.n); s.found.push('Play to ' + fmt(s.target)); }
+    if ((m = T.match(new RegExp(NUM + ' (rounds|hands|holes|deals)')))) { s.rounds = toN(m[1]); s.found.push(plural(s.rounds, 'round')); }
+    // how points come in
+    if (/(winner|player who (goes|went) out|whoever (wins|goes out))( of (the|each|a) (round|hand))? (scores|gets|collects|earns|takes)/.test(T)) s.pts = 'winner';
+    else if (/(at the end of the game|when the game ends|end of the game).{0,60}(count|add|score|total)|score (sheet|card)|categor/.test(T)) s.pts = 'end';
+    else if (/(each|every|end of (the|each)|after (each|every)) (round|hand|turn).{0,60}(points?|score)|(points?|score).{0,60}(each|every) (round|hand)/.test(T)) s.pts = 'round';
+    else if (/\b(lives|life points|chips|tokens|lose a life|gain|plus|minus)\b/.test(T) && /points?|lives|chips|tokens/.test(T)) s.pts = 'tap';
+    else if (/(first (player |person |one |team )?to (finish|get rid|reach the end|get home|get all|cross|win)|last (player |one |person )?(standing|left))/.test(T) && !/points?/.test(T)) s.pts = 'none';
+    else if (/points?|score/.test(T)) s.pts = 'round';
+    const ptsName = { round: 'Everyone scores each round', winner: 'Only the round winner scores', end: 'Score boxes at the end', tap: 'Plus and minus any time', none: 'No points' };
+    if (s.pts) s.found.push(ptsName[s.pts]);
+    if (s.laps && s.pts && s.pts !== 'none') s.lapWin = /(most|highest) (points|score)|best score/.test(T) ? 'score' : 'first';
+    // quick-add buttons from point values
+    const q = [], seen = new Set();
+    const add = (label, v) => { label = label.trim().replace(/^(a|an|the|each|every)\s+/, '').replace(/\s+(cards?)$/, ''); if (!label || label.length > 18 || isNaN(v) || seen.has(label)) return; seen.add(label); q.push([label[0].toUpperCase() + label.slice(1), v]); };
+    const plain = T.replace(/[.;!?\n]/g, ' . ');
+    for (const r of plain.matchAll(/([a-z][a-z0-9 \-]{0,18}?)\s+(cards?\s+)?(are|is)\s+worth\s+(minus\s+|-)?(\d+)/g)) add(r[1], (r[4] ? -1 : 1) * +r[5]);
+    for (const r of plain.matchAll(/([a-z][a-z0-9 \-]{0,18}?)\s*(=|:)\s*(-?\d+)\s*(points?|pts)?/g)) add(r[1], +r[3]);
+    for (const r of plain.matchAll(/(lose|minus|-)?\s*(\d+)\s+points?\s+(for|per)\s+(each|every|a|an)?\s*([a-z][a-z \-]{1,18}?)\s*[.,]/g)) add(r[5], (r[1] ? -1 : 1) * +r[2]);
+    if (q.length) { s.q = q.slice(0, 8); s.found.push('Buttons: ' + s.q.map(x => x[0] + ' ' + (x[1] > 0 ? '+' : '') + x[1]).join(', ')); }
+    return s;
+  }
+  function useSuggestion(sg) {
+    draft.mode = 'build';
+    if (sg.pts) draft.pts = sg.pts;
+    if (sg.win) draft.win = sg.win;
+    if (sg.target != null) draft.target = sg.target;
+    if (sg.rounds != null) draft.rounds = sg.rounds;
+    if (sg.laps) { draft.lapsOn = true; draft.lapsN = sg.laps; if (sg.lapWin) draft.lapWin = sg.lapWin; }
+    if (sg.q) draft.q = sg.q;
+    draft.sugg = null;
+  }
+
   function vCustom() {
-    const d = draft;
-    const styles = [['rounds', 'Everyone scores each round'], ['winner', 'Round winner takes the points'], ['sheet', 'Score sheet with categories'], ['counter', 'Counter with + and −'], ['wins', 'Just who won']];
-    return topbar(d.id ? 'Edit game' : 'Make a game', '', back('games')) + `<main class="body">
+    const d = draft, build = d.mode === 'build', s = build ? PT_STYLE[d.pts] : d.s;
+    const opt = (k, label, html) => `<div class="opt"><label for="c-${k}">${label}</label>${html}</div>`;
+    const numIn = (k, v, ph) => `<input id="c-${k}" class="num" inputmode="numeric" value="${v ?? ''}" placeholder="${ph || 'no limit'}">`;
+    const hasPoints = s !== 'wins';
+    const sg = d.sugg;
+    return topbar(d.id ? 'Edit game' : 'Make a game', d.id ? esc(d.n) : '', back(d.from || 'games')) + `<main class="body">
       <label class="lbl" for="c-name">Name</label><input id="c-name" class="txt" value="${esc(d.n)}" placeholder="e.g. Grandma's Rummy" maxlength="40">
+
+      <label class="lbl" for="c-rules">📖 Rules <span class="muted">(how to play, in your own words)</span></label>
+      <textarea id="c-rules" class="note rules" rows="6" placeholder="e.g. Everyone gets 7 cards. Each round, the player who goes out scores the cards left in everyone's hands. Wild cards are worth 50. First to 300 wins.">${esc(d.rules || '')}</textarea>
+      <button class="btn ghost" data-act="cread">✨ Read my rules and suggest the scoring</button>
+      ${sg ? `<div class="card sugg">${sg.found.length ? `<b>From your rules I found:</b><ul>${sg.found.map(f => `<li>${esc(f)}</li>`).join('')}</ul><div class="two"><button class="btn" data-act="cnosugg">No thanks</button><button class="btn primary" data-act="cusesugg">Use this</button></div>`
+        : `<b>I couldn't spot the scoring in those rules.</b><span class="muted small">Try phrases like "first to 300", "lowest score wins", "3 laps", "each round", or "Wild cards are worth 50". Or pick the scoring below.</span><button class="btn" data-act="cnosugg">OK</button>`}</div>` : ''}
+
       <div class="lbl">How is it scored?</div>
-      <div class="radios">${styles.map(([k, l]) => `<button data-act="cstyle" data-v="${k}" class="${d.s === k ? 'on' : ''}">${l}</button>`).join('')}</div>
-      ${d.s !== 'wins' && d.s !== 'counter' ? `<div class="opt"><span>Who wins</span><div class="seg sm"><button data-act="cwin" data-v="high" class="${d.win !== 'low' ? 'on' : ''}">Highest</button><button data-act="cwin" data-v="low" class="${d.win === 'low' ? 'on' : ''}">Lowest</button></div></div>` : ''}
-      ${['rounds', 'winner', 'counter'].includes(d.s) ? `<div class="opt"><label for="c-target">Play to</label><input id="c-target" class="num" inputmode="numeric" value="${d.target ?? ''}" placeholder="no limit"></div>` : ''}
-      ${['rounds', 'winner'].includes(d.s) ? `<div class="opt"><label for="c-rounds">Number of rounds</label><input id="c-rounds" class="num" inputmode="numeric" value="${d.rounds ?? ''}" placeholder="no limit"></div>` : ''}
-      ${d.s === 'counter' ? `<div class="opt"><label for="c-start">Everyone starts at</label><input id="c-start" class="num" inputmode="numeric" value="${d.start ?? 0}"></div>` : ''}
-      ${d.s === 'sheet' ? `<label class="lbl" for="c-cats">Categories, one per line <span class="muted">(start with − for ones that subtract)</span></label><textarea id="c-cats" class="note" rows="6" placeholder="Routes&#10;Tickets&#10;−Penalties">${esc((d.cats || []).map(c => (c.neg ? '−' : '') + c.n).join('\n'))}</textarea>` : ''}
-      ${['rounds', 'winner'].includes(d.s) ? `<label class="lbl" for="c-quick">Quick-add buttons <span class="muted">(optional, like "Wild 50", one per line)</span></label><textarea id="c-quick" class="note" rows="3" placeholder="Wild 50&#10;Skip 20">${esc((d.q || []).map(q => q[0] + ' ' + q[1]).join('\n'))}</textarea>` : ''}
-      <label class="lbl" for="c-rule">How it's scored, in one line</label><input id="c-rule" class="txt" value="${esc(d.r || '')}" placeholder="e.g. first to 300, lowest wins">
-      <button class="btn primary big" data-act="csave">Save game</button>
+      <div class="radios">${PRESETS.map(([k, l]) => `<button data-act="cstyle" data-v="${k}" class="${!build && d.s === k ? 'on' : ''}">${l}</button>`).join('')}
+        <button data-act="cstyle" data-v="build" class="${build ? 'on' : ''} mine">✨ Create my own<span class="muted small">Build the scoring from parts</span></button></div>
+
+      ${build ? `<div class="lbl">How do points work?</div>
+      <div class="radios sm">${POINTS.map(([k, l]) => `<button data-act="cpts" data-v="${k}" class="${d.pts === k ? 'on' : ''}">${l}</button>`).join('')}</div>` : ''}
+
+      <div class="opts">
+        ${hasPoints && s !== 'counter' ? `<div class="opt"><span>Who wins</span><div class="seg sm"><button data-act="cwin" data-v="high" class="${d.win !== 'low' ? 'on' : ''}">Highest</button><button data-act="cwin" data-v="low" class="${d.win === 'low' ? 'on' : ''}">Lowest</button></div></div>` : ''}
+        ${['rounds', 'winner', 'counter'].includes(s) ? opt('target', 'Play to', numIn('target', d.target)) : ''}
+        ${['rounds', 'winner'].includes(s) ? opt('rounds', 'Number of rounds', numIn('rounds', d.rounds)) : ''}
+        ${s === 'counter' ? opt('start', 'Everyone starts at', numIn('start', d.start ?? 0, '0')) + opt('steps', 'Button amounts', `<input id="c-steps" class="num wide" value="${esc(d.stepsText || '1, 5, 10')}" placeholder="1, 5, 10">`) : ''}
+        <div class="opt"><span>Count laps around the board</span><button class="tog ${d.lapsOn ? 'on' : ''}" data-act="claps" aria-label="Count laps"><i></i></button></div>
+        ${d.lapsOn ? opt('lapsn', 'Laps to finish', numIn('lapsn', d.lapsN, '3')) : ''}
+        ${d.lapsOn && hasPoints ? `<div class="opt col"><span>When someone finishes the laps</span><div class="seg sm"><button data-act="clapwin" data-v="first" class="${d.lapWin !== 'score' ? 'on' : ''}">They win</button><button data-act="clapwin" data-v="score" class="${d.lapWin === 'score' ? 'on' : ''}">Best score wins</button></div></div>` : ''}
+      </div>
+      ${d.lapsOn && !hasPoints ? '<p class="muted small">No points: the first player to finish the laps wins.</p>' : ''}
+
+      ${s === 'sheet' ? `<label class="lbl" for="c-cats">Score boxes, one per line <span class="muted">(start with − for ones that subtract)</span></label><textarea id="c-cats" class="note" rows="5" placeholder="Routes&#10;Tickets&#10;−Penalties">${esc((d.cats || []).map(c => (c.neg ? '−' : '') + c.n).join('\n'))}</textarea>` : ''}
+      ${['rounds', 'winner'].includes(s) ? `<label class="lbl" for="c-quick">Quick-add buttons <span class="muted">(like "Wild 50", one per line)</span></label><textarea id="c-quick" class="note" rows="3" placeholder="Wild 50&#10;Skip 20">${esc((d.q || []).map(q => q[0] + ' ' + q[1]).join('\n'))}</textarea>` : ''}
+      <label class="lbl" for="c-rule">Short description <span class="muted">(optional, shows in the game list)</span></label><input id="c-rule" class="txt" value="${esc(d.r || '')}" placeholder="Filled in for you if left blank">
+      <button class="btn primary big" data-act="csave">${d.id ? 'Save changes' : 'Save game'}</button>
       ${d.id ? `<button class="btn danger" data-act="cdel">Delete this game</button>` : ''}
     </main>`;
   }
@@ -964,9 +1101,27 @@
     const num = id => { const x = v(id); if (x === undefined) return undefined; return x === '' || isNaN(+x.replace(/,/g, '')) ? null : +x.replace(/,/g, ''); };
     if (v('#c-name') !== undefined) draft.n = v('#c-name');
     if (v('#c-rule') !== undefined) draft.r = v('#c-rule');
+    const rules = $('#c-rules'); if (rules) draft.rules = rules.value;
     ['target', 'rounds', 'start'].forEach(k => { const x = num('#c-' + k); if (x !== undefined) draft[k] = x; });
+    const ln = num('#c-lapsn'); if (ln !== undefined) draft.lapsN = ln && ln > 0 ? Math.round(ln) : 3;
+    if (v('#c-steps') !== undefined) draft.stepsText = v('#c-steps');
     const cats = v('#c-cats'); if (cats !== undefined) draft.cats = cats.split('\n').map(x => x.trim()).filter(Boolean).map(x => /^[−-]/.test(x) ? { n: x.replace(/^[−-]\s*/, ''), neg: true } : { n: x });
     const q = v('#c-quick'); if (q !== undefined) draft.q = q.split('\n').map(x => x.trim().match(/^(.*?)\s*([−-]?\d+)$/)).filter(Boolean).map(m => [m[1] || 'Add', +m[2].replace('−', '-')]);
+  }
+  function showRules(c, defId) {
+    const house = S.notes[defId];
+    openSheet({
+      draw: () => `<div class="sh-h"><b>📖 ${esc(c.n)}</b><button class="ico" data-sh="close" aria-label="Close">✕</button></div>
+        <div class="rulestext">${c.rules ? esc(c.rules) : '<span class="muted">No rules written yet.</span>'}</div>
+        ${house ? `<div class="card housenote"><b>House rules</b>${esc(house)}</div>` : ''}
+        ${S.custom.some(x => x.id === defId) ? `<button class="btn ghost wide" data-sh="edit">✎ Edit this game</button>` : ''}`,
+      on: k => { if (k === 'edit') { closeSheet(); editGame(defId); } }
+    });
+  }
+  function editGame(id, from) {
+    const d = S.custom.find(x => x.id === id); if (!d) return;
+    draft = draftFromDef(d); draft.from = from || (V.name === 'setup' ? 'games' : V.name === 'play' ? 'home' : 'games');
+    go('custom');
   }
 
   // ───────── events ─────────
@@ -1009,6 +1164,7 @@
         if (['rounds', 'winner', 'calc'].includes(d.s) && d.rounds !== 'wizard') opt.rounds = setup.rounds;
         if (d.s === 'counter') opt.start = setup.start ?? d.start ?? 0;
         if (d.tby && setup.target == null) delete opt.target;
+        if (d.laps) opt.laps = setup.laps || d.laps;
         startGame(d, seats, opt); break;
       }
       case 'undo': if (g) doUndo(g); break;
@@ -1035,19 +1191,29 @@
       case 'creset': S.settings.colors = {}; save(); applyTheme(); refreshColors(); toast('Original colors are back'); break;
       case 'awake': S.settings.awake = !S.settings.awake; save(); render(); break;
       case 'export': exportBackup(); break;
-      case 'newcustom': draft = { n: el.dataset.name || '', s: 'rounds', win: 'high', target: null, rounds: null, cats: [], q: [], r: '' }; go('custom'); break;
-      case 'cstyle': readDraft(); draft.s = el.dataset.v; render(); break;
+      case 'newcustom': draft = newDraft(el.dataset.name); draft.from = V.name === 'home' ? 'home' : 'games'; go('custom'); break;
+      case 'cstyle': readDraft();
+        if (el.dataset.v === 'build') { if (draft.mode !== 'build') { draft.mode = 'build'; draft.pts = { rounds: 'round', winner: 'winner', sheet: 'end', counter: 'tap', wins: 'none' }[draft.s] || 'round'; } }
+        else { draft.mode = 'preset'; draft.s = el.dataset.v; }
+        render(); break;
+      case 'cpts': readDraft(); draft.pts = el.dataset.v; render(); break;
       case 'cwin': readDraft(); draft.win = el.dataset.v; render(); break;
+      case 'claps': readDraft(); draft.lapsOn = !draft.lapsOn; render(); break;
+      case 'clapwin': readDraft(); draft.lapWin = el.dataset.v; render(); break;
+      case 'cread': readDraft(); if (!String(draft.rules || '').trim()) { toast('Type your rules in the box first'); break; } draft.sugg = readRules(draft.rules); render(); setTimeout(() => { const x = $('.sugg'); if (x) x.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60); break;
+      case 'cusesugg': readDraft(); useSuggestion(draft.sugg); render(); toast('Scoring set from your rules · check it below'); break;
+      case 'cnosugg': readDraft(); draft.sugg = null; render(); break;
       case 'csave': {
         readDraft(); if (!draft.n) { toast('Give the game a name'); break; }
-        if (draft.s === 'sheet' && !draft.cats.length) draft.cats = [{ n: 'Final score' }];
-        const d = Object.assign({}, draft, { c: 'mine', g: 'Made by you' });
-        if (!d.id) d.id = 'my-' + uid();
-        if (!d.r) d.r = (d.win === 'low' ? 'Lowest' : 'Highest') + ' total wins' + (d.target ? ' · to ' + fmt(d.target) : '');
-        ['target', 'rounds', 'start'].forEach(k => { if (d[k] == null) delete d[k]; });
-        if (d.s === 'counter') d.steps = [1, 5, 10];
-        S.custom = S.custom.filter(x => x.id !== d.id).concat(d); save(); tab = 'mine'; toast('Saved to Mine'); openSetup(d.id); break;
+        const d = defFromDraft(draft);
+        S.custom = S.custom.filter(x => x.id !== d.id).concat(d); save(); toast(draft.id ? 'Changes saved' : 'Saved to Mine'); tab = 'mine'; openSetup(d.id); break;
       }
+      case 'editgame': editGame(id); break;
+      case 'rules': showRules(findAny(id), id); break;
+      case 'lap': if (g) {
+        snap(g); g.laps = g.laps || {}; const d = +el.dataset.d, v = Math.max(0, (g.laps[id] || 0) + d); g.laps[id] = v; g.updated = Date.now(); save(); render();
+        if (d > 0) { const s = g.seats.find(x => x.id === id); toast(s.name + ' · lap ' + v + ' of ' + g.cfg.laps); if (navigator.vibrate) navigator.vibrate(20); checkOver(g); }
+      } break;
       case 'cdel': confirmBox('Delete this game?', 'Delete', () => { S.custom = S.custom.filter(x => x.id !== draft.id); S.favs = S.favs.filter(x => x !== draft.id); save(); go('games'); }); break;
     }
   });
