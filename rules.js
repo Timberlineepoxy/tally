@@ -348,5 +348,247 @@ window.TALLY_RULES = {
       { h: 'How to win', p: 'The first player to 121 wins, even in the middle of a hand. Deal passes back and forth each hand.' }
     ],
     links: [['Cribbage rules (pagat.com)', 'https://www.pagat.com/adders/crib6.html']]
+  },
+  // ───── Batch 3: family card games ─────
+  'nertz': {
+    sections: [
+      { h: 'What you need', p: 'One standard 52-card deck per player, each with a different back. 2 or more players (bigger groups can pair up as partners).' },
+      { h: 'Setup', li: ['Each player deals their own Nertz pile: 13 cards, 12 face down with the top one face up.', 'Next to it, deal 4 work piles of one face-up card each.', 'Hold the rest of your deck as your stock.'] },
+      { h: 'Playing (everyone at once, no turns)', li: ['Aces go in the middle. Anyone can build on any Ace pile, up in the same suit to the King.', 'On your work piles, build down in alternating colors (red on black). You can move a card with everything on top of it.', 'Fill an empty work pile from your Nertz pile, your stock or another work pile.', 'Flip your stock 3 cards at a time onto a waste pile. The top waste card can be played. When the stock runs out, turn the waste pile over.', 'Use only one hand at a time.'] },
+      { h: 'End of a round', p: 'When you empty your Nertz pile, call "Nertz!" and everyone stops.' },
+      { h: 'Scoring', p: '+1 for every one of your cards in the middle piles. −2 for every card left in your Nertz pile.' },
+      { h: 'How to win', p: 'First to 100 wins.' }
+    ],
+    links: [['Nertz rules (pagat.com)', 'https://www.pagat.com/patience/nerts.html']]
+  },
+
+  'dutch-blitz': {
+    sections: [
+      { h: 'What you need', p: 'The Dutch Blitz set: 4 decks of 40 cards (numbers 1–10 in red, blue, yellow and green), one deck per player. 2–4 players.' },
+      { h: 'Setup', li: ['Deal 3 Post piles face up in a row (5 with 2 players).', 'To the right, deal the Blitz pile: 10 cards, face up on top.', 'Hold the rest face down.'] },
+      { h: 'Playing (everyone at once)', li: ['Any 1 you can see must go to the middle to start a Dutch pile.', 'Dutch piles build up from 1 to 10 in one color. Anyone can play on any of them.', 'On your Post piles, build down, alternating boy and girl cards.', 'When a Post pile is empty, fill it from your Blitz pile.', 'Flip your hand 3 at a time onto your Wood pile. The top card can be played. Don\'t shuffle when you turn it back over.', 'One card at a time, with one hand.'] },
+      { h: 'End of a round', p: 'When you play your last Blitz card, shout "Blitz!" and everyone stops.' },
+      { h: 'Scoring', p: '+1 for each card you put in the Dutch piles. −2 for each card left in your Blitz pile.' },
+      { h: 'How to win', p: 'First to 75 wins. If more than one player passes 75 in the same round, the highest score wins.' }
+    ],
+    links: [['Dutch Blitz rules (UltraBoardGames)', 'https://www.ultraboardgames.com/dutch-blitz/game-rules.php']]
+  },
+
+  'racko': {
+    sections: [
+      { h: 'What you need', p: 'The Rack-O cards (1–60) and racks. 2 players use cards 1–40, 3 players use 1–50, 4 players use all 60.' },
+      { h: 'Setup', li: ['Deal 10 cards each. Put each card in your rack as it comes, starting from the back slot (50) and working to the front slot (5). Don\'t rearrange them.', 'Flip one card to start the discard pile; the rest is the draw pile.'] },
+      { h: 'On your turn', li: ['Take the top discard (you must put it in your rack), or draw from the pile (put it in your rack or discard it).', 'The new card replaces one card in your rack, and that card goes on the discard pile.'] },
+      { h: 'Going Rack-O', p: 'When your rack goes from lowest at the front to highest at the back, call "Rack-O!" and the round ends.' },
+      { h: 'Scoring', li: ['Rack-O: 75 points (5 for each card plus 25).', 'Everyone else: 5 points for each card in order, counting from the front slot until the order breaks.', 'Bonus option: the Rack-O player scores extra for a run of numbers in a row: 3 cards +50, 4 cards +100, 5 cards +200, 6 or more +400.'] },
+      { h: 'How to win', p: 'First to 500 wins.' }
+    ],
+    links: [['Rack-O rules (UltraBoardGames)', 'https://www.ultraboardgames.com/rack-o/game-rules.php']]
+  },
+
+  'mille-bornes': {
+    sections: [
+      { h: 'What you need', p: 'The Mille Bornes deck: distance cards, hazards, remedies and safeties. 2–6 players (4 or 6 play as teams).' },
+      { h: 'Setup', p: 'Deal 6 cards each. The rest is the draw pile.' },
+      { h: 'On your turn', li: ['Draw one card, then play one card or discard. You always end your turn with 6 cards.', 'You need a Roll (green light) card showing before you can play distance cards.', 'Play hazards on other players to stop them; they need the matching remedy, and then a Roll card again.'] },
+      { h: 'Hazards, remedies and safeties', li: ['Accident → Repairs (safety: Driving Ace)', 'Out of Gas → Gasoline (safety: Extra Tank)', 'Flat Tire → Spare Tire (safety: Puncture Proof)', 'Stop → Roll (safety: Right of Way, also called Emergency Vehicle)', 'Speed Limit (only 50-mile cards) → End of Limit (safety: Right of Way)', 'A safety protects you for the rest of the round, and you get another turn after playing it.'] },
+      { h: 'Coup fourré', p: 'If someone plays a hazard on you and you hold its safety, play the safety right away and shout "Coup fourré!" You block it, draw a card and take the next turn.' },
+      { h: 'End of a round', p: 'The round ends when someone reaches exactly 1,000 miles (or 700 in shorter games). You can only play 2 of the 200-mile cards per round.' },
+      { h: 'Scoring', li: ['Miles you drove.', 'Each safety played: 100. All 4 safeties: 300 more. Each coup fourré: 300.', 'Finishing the trip: 400. No 200-mile cards used: 300. Finishing after the draw pile ran out: 300. Going to 1,000 after calling an extension: 200. Opponent had no miles at all (shutout): 500.'] },
+      { h: 'How to win', p: 'First to 5,000 points wins.' }
+    ],
+    links: [['Mille Bornes rules (Official Game Rules)', 'https://officialgamerules.org/game-rules/mille-bornes/']]
+  },
+
+  'pit': {
+    sections: [
+      { h: 'What you need', p: 'The Pit deck: 9 cards of each commodity, plus the Bull, the Bear and a bell. 3–8 players.' },
+      { h: 'Setup', p: 'Use one commodity per player and deal 9 cards each. Leave out the Bull and Bear for the basic game.' },
+      { h: 'Trading (everyone at once)', li: ['When the bell rings, the market is open.', 'Hold out 1–4 cards of the same commodity face down and shout how many: "Two! Two! Two!"', 'Trade with anyone calling the same number. Don\'t say what the cards are.'] },
+      { h: 'Cornering', p: 'When you have all 9 cards of one commodity, ring the bell and shout "Corner on Wheat!" (or whatever it is). You score that commodity\'s value, printed on the cards.' },
+      { h: 'Bull and Bear (optional)', li: ['Shuffle them in. Two players will get 10 cards.', 'Holding either one when someone else corners costs 20 points (40 for both).', 'The Bull is wild: 8 of a commodity plus the Bull is a corner. All 9 plus the Bull is a double corner.'] },
+      { h: 'How to win', p: 'First to 500 wins.' }
+    ],
+    note: 'Different editions have different commodities and point values. Use the values printed on your cards.',
+    links: [['Pit rules (UltraBoardGames)', 'https://www.ultraboardgames.com/pit/game-rules.php']]
+  },
+
+  'flip-7-with-a-vengeance': {
+    sections: [
+      { h: 'What you need', p: 'The Flip 7: With a Vengeance deck: 108 cards, numbers 0–13 (as many of each as its number, plus one 0), minus modifiers, and action cards.' },
+      { h: 'A round', li: ['Everyone gets one card. Then, in turn, each player hits (takes another card) or stays.', 'Get a number you already have and you bust: 0 points this round.', 'Get 7 different numbers and the round ends right away, with a 15-point bonus.'] },
+      { h: 'Special number cards', li: ['The Zero: your score becomes 0 unless you get a Flip 7, so you\'ll want to keep hitting.', 'Lucky 13: you can have two 13s without busting (a third busts you).', 'Unlucky 7: throw away all your other number and modifier cards; you keep just the 7.'] },
+      { h: 'Modifier cards', p: '−2, −4, −6, −8, −10 and ÷2. Play them on any player who hasn\'t busted. They can\'t take a score below 0 and don\'t count toward Flip 7.' },
+      { h: 'Action cards', li: ['Give an action to any player, even yourself.', 'Just One More: they take one more card, then stay.', 'Flip Four: they take the next 4 cards (they can bust).', 'Discard: remove a card from any player\'s row.', 'Steal: take a card from a player who hasn\'t busted.', 'Swap: swap two cards between two players who haven\'t busted.'] },
+      { h: 'Brutal mode (optional)', p: 'Scores can go below 0, modifiers can hit busted players, and on a Flip 7 you can take 15 off another player instead of adding 15.' },
+      { h: 'How to win', p: 'First to 200 ends the game. The highest score wins.' }
+    ],
+    links: [['Rules (Board Game Arena)', 'https://en.doc.boardgamearena.com/Gamehelpflipsevenwithavengeance']]
+  },
+
+  'dragonwood': {
+    sections: [
+      { h: 'What you need', p: '64 Adventurer cards (red backs), 42 Dragonwood cards (green backs) and 6 special dice (faces 1, 2, 2, 3, 3, 4). 2–4 players.' },
+      { h: 'Setup', li: ['Take the 2 dragons out of the Dragonwood deck and shuffle it.', 'Remove 12 cards (2 players), 10 (3 players) or 8 (4 players).', 'Shuffle the dragons into the bottom half.', 'Lay 5 Dragonwood cards face up: this is the landscape.', 'Deal 5 Adventurer cards to each player.'] },
+      { h: 'On your turn (pick one)', li: ['Reload: draw 1 Adventurer card. Your hand limit is 9.', 'Capture: pick a creature or enhancement in the landscape and attack it with cards from your hand. Roll one die for each card.'] },
+      { h: 'Attacks', li: ['Strike: cards in a row, like 3-4-5 (any colors).', 'Stomp: cards with the same number.', 'Scream: cards of the same color.', 'A single card counts as any attack. Up to 6 dice.'] },
+      { h: 'Capturing', li: ['If your dice total (plus enhancement bonuses) reaches the number for that attack, you capture it.', 'Creatures go in your pile for points. Enhancements stay in front of you and help later attacks.', 'If you miss, discard one card from your hand.', 'Events happen to everyone right away. Refill the landscape to 5.'] },
+      { h: 'End of the game', p: 'The game ends when both dragons are captured, or when the Adventurer deck has run out twice (everyone gets one last turn).' },
+      { h: 'Scoring', p: 'Add up the points on your creatures. The player with the most creatures gets 3 bonus points (2 each if tied). The highest total wins.' }
+    ],
+    links: [['Dragonwood rules (Board Game Arena)', 'https://en.doc.boardgamearena.com/Gamehelpdragonwood']]
+  },
+
+  'cabo': {
+    sections: [
+      { h: 'What you need', p: 'The Cabo deck (cards 0 to 13). 2–5 players.' },
+      { h: 'Setup', li: ['Deal 4 cards face down in a row in front of each player. Don\'t look.', 'Before the round starts, look at any 2 of your cards once. Then remember them!', 'Your cards can\'t change places during the round.', 'Flip one card to start the discard pile.'] },
+      { h: 'On your turn (pick one)', li: ['Draw from the pile. Swap it for one of your cards (discard the old one), or discard it. If it\'s a power card, you can use its power when you discard it.', 'Take the top discard and swap it for one of your cards.', 'Call "Cabo!" (see below).'] },
+      { h: 'Power cards (only when drawn from the pile)', li: ['7 or 8, Peek: look at one of your own cards.', '9 or 10, Spy: look at one card of another player\'s.', '11 or 12, Swap: swap one of your cards with another player\'s, without looking.'] },
+      { h: 'Matching cards', p: 'You can swap 2, 3 or 4 of your cards that are the same number for the one card you drew. If they don\'t actually match, show them, put them back, and discard the drawn card.' },
+      { h: 'Calling Cabo', li: ['When you think you have the lowest total, call "Cabo" instead of drawing.', 'Everyone else gets one more turn, then all cards are flipped.', 'The lowest total scores 0; everyone else scores their total.', 'If the Cabo caller isn\'t lowest, they score their total plus a 5-point penalty.', 'Two 12s and both 13s at the end of a round: you score 0 and everyone else gets 50.'] },
+      { h: 'How to win', p: 'If your total hits exactly 100, it drops to 50 (once per game). The game ends when someone goes over 100, and the lowest total wins.' }
+    ],
+    note: 'Older editions used a 10-point penalty and other small changes. These are the current official rules.',
+    links: [['How to play (official Cabo site)', 'https://www.cabogame.com/how-to-play']]
+  },
+
+  'sushi-go': {
+    sections: [
+      { h: 'What you need', p: 'The Sushi Go! deck (108 cards). 2–5 players.' },
+      { h: 'Setup', p: 'Deal 10 cards each with 2 players, 9 with 3, 8 with 4, 7 with 5.' },
+      { h: 'Playing a round', li: ['Everyone picks one card from their hand and puts it face down. Everyone flips at once.', 'Pass the rest of your hand to the left. Pick again.', 'Keep going until all the cards are played. Then score.'] },
+      { h: 'Scoring', li: ['Maki rolls: most roll icons 6, second most 3.', 'Tempura: each pair 5.', 'Sashimi: each set of 3 is 10.', 'Dumplings: 1, 2, 3, 4, 5 or more score 1, 3, 6, 10, 15.', 'Nigiri: squid 3, salmon 2, egg 1. On a wasabi, triple it.', 'Chopsticks: later, swap them back into your hand to play 2 cards in one turn.'] },
+      { h: 'Rounds and pudding', li: ['Play 3 rounds. Discard everything except pudding between rounds.', 'At the end, most pudding +6, fewest pudding −6 (no penalty with 2 players).'] },
+      { h: 'How to win', p: 'Most points after 3 rounds. Ties go to the player with more pudding.' }
+    ],
+    links: [['Sushi Go! rules (UltraBoardGames)', 'https://www.ultraboardgames.com/sushi-go/game-rules.php']]
+  },
+
+  'sushi-go-party': {
+    sections: [
+      { h: 'What you need', p: 'The Sushi Go Party! box: lots of card types, menu tiles, a score board and pawns. 2–8 players.' },
+      { h: 'Pick a menu', p: 'Choose a ready-made menu from the box, or build your own: nigiri always, plus 1 roll, 3 appetizers, 2 specials and 1 dessert. Only those cards go in the deck.' },
+      { h: 'Setup', li: ['Deal 10 cards each with 2–3 players, 9 with 4–5, 8 with 6–7, 7 with 8.', 'Desserts are added a few at a time each round.'] },
+      { h: 'Playing', p: 'Same as Sushi Go!: everyone picks a card, flips together, passes left, and repeats until hands are empty. Play 3 rounds and move your pawn on the board to score.' },
+      { h: 'Scoring changes', li: ['Each card type shows how it scores on its menu tile.', 'Ties for maki and pudding give everyone tied the full points.', 'With 6–8 players, maki scores 6, 4 and 2 for first, second and third.'] },
+      { h: 'How to win', p: 'Most points after 3 rounds. Ties go to the player with more dessert cards.' }
+    ],
+    links: [['Sushi Go Party! rules (UltraBoardGames)', 'https://www.ultraboardgames.com/sushi-go/sushi-go-party.php']]
+  },
+
+  '6-nimmt': {
+    sections: [
+      { h: 'What you need', p: '104 cards numbered 1–104, each with bullheads (penalty points) on it. 2–10 players.' },
+      { h: 'Setup', p: 'Deal 10 cards each. Turn 4 cards face up to start 4 rows.' },
+      { h: 'Playing', li: ['Everyone picks one card and puts it face down. Flip them all at once.', 'Place cards from lowest to highest.', 'Each card goes on the row whose last card is the closest lower number.', 'If your card would be the 6th card in a row, take the 5 cards in that row. Your card starts the row over.', 'If your card is lower than every row, take any row you choose. Your card starts it over.'] },
+      { h: 'Bullheads', p: 'Each card you take is worth its bullheads: most cards are 1, cards ending in 5 are 2, multiples of 10 are 3, doubles like 11 or 22 are 5, and 55 is 7.' },
+      { h: 'How to win', p: 'After 10 cards, count bullheads and deal again. When someone reaches 66, the fewest bullheads wins.' }
+    ],
+    links: [['6 Nimmt! rules (UltraBoardGames)', 'https://www.ultraboardgames.com/6-nimmt/game-rules.php']]
+  },
+
+  'no-thanks': {
+    sections: [
+      { h: 'What you need', p: '33 cards numbered 3–35 and 55 chips. 3 or more players.' },
+      { h: 'Setup', li: ['Give each player 11 chips. Keep your chips hidden.', 'Shuffle the cards and take out 9 without looking. Play with the other 24.'] },
+      { h: 'Playing', li: ['Flip the top card.', 'On your turn, either take the card (plus any chips on it), or say "No thanks!" and put one chip on it. Then it\'s the next player\'s turn.', 'If you have no chips, you must take the card.', 'Whoever takes a card flips the next one and goes again.'] },
+      { h: 'Scoring', li: ['Each card counts its number.', 'A run of numbers in a row only counts the lowest one (17-18-19-20 counts as 17).', 'Each chip you have left takes off 1 point.'] },
+      { h: 'How to win', p: 'When all 24 cards are taken, the lowest score wins.' }
+    ],
+    links: [['No Thanks! rules (UltraBoardGames)', 'https://www.ultraboardgames.com/no-thanks/game-rules.php']]
+  },
+
+  'lost-cities': {
+    sections: [
+      { h: 'What you need', p: 'The Lost Cities board and 60 cards in 5 colors (expedition cards 2–10 and wager cards). 2 players.' },
+      { h: 'Setup', p: 'Deal 8 cards each. The rest is the draw pile.' },
+      { h: 'On your turn', li: ['First play one card: add it to your own row of that color (it must be higher than the last card there), or discard it onto that color\'s spot on the board.', 'Then draw one card from the draw pile or the top of any discard pile (not the one you just discarded).', 'Wager cards can only start a row, before any numbers.'] },
+      { h: 'End of a round', p: 'The round ends when the last card is drawn from the draw pile.' },
+      { h: 'Scoring each color', li: ['Add up the cards and subtract 20 (it costs 20 to start an expedition).', 'Multiply by 2, 3 or 4 if you played 1, 2 or 3 wagers.', 'A row with 8 or more cards gets 20 more after that.', 'Colors you never started score 0.'] },
+      { h: 'How to win', p: 'Play 3 rounds. The highest total wins.' }
+    ],
+    links: [['Lost Cities rules (UltraBoardGames)', 'https://www.ultraboardgames.com/lost-cities/game-rules.php']]
+  },
+
+  'love-letter': {
+    sections: [
+      { h: 'What you need', p: 'The Love Letter cards and tokens. 2–4 players with the classic deck (newer editions add cards and allow more players).' },
+      { h: 'Setup', li: ['Shuffle and put one card face down without looking. With 2 players, also set 3 cards aside face up.', 'Everyone draws one card.'] },
+      { h: 'On your turn', p: 'Draw a card, then play one of your 2 cards face up and do what it says, even if it hurts you.' },
+      { h: 'The cards (classic deck)', li: ['8 Princess (1): if you play or discard her, you\'re out of the round.', '7 Countess (1): you must play her if your other card is the King or Prince.', '6 King (1): trade hands with another player.', '5 Prince (2): choose any player (even yourself) to discard their hand and draw a new card.', '4 Handmaid (2): nobody can target you until your next turn.', '3 Baron (2): compare hands with another player in secret. Lower card is out.', '2 Priest (2): look at another player\'s hand.', '1 Guard (5): name a card (not Guard). If that player has it, they\'re out.'] },
+      { h: 'Winning a round', p: 'The round ends when only one player is left, or the deck runs out (highest card wins; if tied, highest total of played cards). The winner gets a token.' },
+      { h: 'How to win', p: 'Classic deck: 7 tokens with 2 players, 5 with 3, 4 with 4.' }
+    ],
+    note: 'Newer editions have a bigger deck (with a Spy and a Chancellor) and need different token counts. Use the card that came in your box.',
+    links: [['Love Letter rules (UltraBoardGames)', 'https://www.ultraboardgames.com/love-letter/game-rules.php']]
+  },
+
+  'skull': {
+    sections: [
+      { h: 'What you need', p: 'Each player has 4 cards (3 roses and 1 skull) and a mat. 3–6 players.' },
+      { h: 'Starting a round', p: 'Everyone secretly puts one card face down on their mat.' },
+      { h: 'On your turn', li: ['Add one more card face down on your pile, or start a challenge.', 'To challenge, say how many cards you think you can flip without hitting a skull.', 'Going around, each player raises the number or passes. The highest bid becomes the challenger.'] },
+      { h: 'Flipping', li: ['The challenger flips their own pile first, top card first.', 'Then they flip from the top of other players\' piles until they reach their number.', 'All roses: they win the challenge and flip their mat over.', 'A skull: they lose one of their cards for good (the skull\'s owner picks it at random if it was someone else\'s skull). Lose all 4 and you\'re out.'] },
+      { h: 'How to win', p: 'Win 2 challenges, or be the last player left.' }
+    ],
+    links: [['Skull rules (UltraBoardGames)', 'https://www.ultraboardgames.com/skull-and-roses/game-rules.php']]
+  },
+
+  'munchkin': {
+    sections: [
+      { h: 'What you need', p: 'The Munchkin cards (a Door deck and a Treasure deck) and a die. 3–6 players.' },
+      { h: 'Setup', p: 'Everyone starts at level 1. Deal 4 Door and 4 Treasure cards to each player.' },
+      { h: 'On your turn', li: ['Kick open the door: flip the top Door card. A monster means fight; a curse hits you right away; anything else goes in your hand.', 'If you didn\'t fight, either fight a monster from your hand (looking for trouble) or take another Door card into your hand (loot the room).', 'Charity: end with 5 cards or fewer. Give extras to the lowest-level player.'] },
+      { h: 'Fighting', li: ['Your strength is your level plus your gear and bonuses. Beat the monster\'s level to win. Ties go to the monster.', 'Win: go up a level (sometimes 2) and take its treasures.', 'You can ask one player to help, and bribe them with treasure.', 'Losing? Run away: roll 5 or 6 to escape. Fail, and the monster\'s Bad Stuff happens to you.', 'Other players can play cards to make your fight harder.'] },
+      { h: 'Selling', p: 'On your turn, sell items worth 1,000 gold to go up one level. You can\'t sell your way to level 10.' },
+      { h: 'How to win', p: 'The first player to reach level 10 wins, and that last level has to come from killing a monster.' }
+    ],
+    links: [['Munchkin rules (UltraBoardGames)', 'https://www.ultraboardgames.com/munchkin/game-rules.php']]
+  },
+
+  'coup': {
+    sections: [
+      { h: 'What you need', p: '15 character cards (3 each of Duke, Assassin, Captain, Ambassador, Contessa) and coins. 2–6 players.' },
+      { h: 'Setup', p: 'Deal 2 cards face down to each player. These are your 2 lives (influence). Everyone takes 2 coins.' },
+      { h: 'On your turn (pick one action)', li: ['Income: take 1 coin.', 'Foreign aid: take 2 coins (a Duke can block it).', 'Coup: pay 7 coins and a player loses a life. It can\'t be stopped. With 10 or more coins you must coup.', 'Duke, Tax: take 3 coins.', 'Assassin: pay 3 coins and a player loses a life (a Contessa blocks it).', 'Captain: steal 2 coins from a player (a Captain or Ambassador blocks it).', 'Ambassador: draw 2 cards, keep any 2 of your cards, put 2 back.'] },
+      { h: 'Bluffing and challenges', li: ['You can claim any character, even one you don\'t have.', 'Anyone can challenge you. If you can\'t show the card, you lose a life. If you can, the challenger loses a life, and you shuffle your card back and draw a new one.', 'Blocks can be challenged too.'] },
+      { h: 'Losing a life', p: 'Turn one of your cards face up. When both are face up, you\'re out.' },
+      { h: 'How to win', p: 'Be the last player with a card still face down.' }
+    ],
+    links: [['Coup rules (UltraBoardGames)', 'https://www.ultraboardgames.com/coup/game-rules.php']]
+  },
+
+  'exploding-kittens': {
+    sections: [
+      { h: 'What you need', p: 'The Exploding Kittens deck. 2–5 players.' },
+      { h: 'Setup', li: ['Take out the Exploding Kittens and Defuse cards.', 'Deal 4 cards to each player, then give everyone 1 Defuse.', 'Shuffle Exploding Kittens back in: one fewer than the number of players. Add the spare Defuses too.'] },
+      { h: 'On your turn', li: ['Play as many cards as you want (or none).', 'Then end your turn by drawing one card.', 'Draw an Exploding Kitten and you\'re out, unless you play a Defuse. Then put the Kitten back anywhere in the pile, secretly.'] },
+      { h: 'The cards', li: ['Attack: end your turn without drawing; the next player takes 2 turns.', 'Skip: end your turn without drawing.', 'Favor: another player gives you a card of their choice.', 'Shuffle: shuffle the draw pile.', 'See the Future: look at the top 3 cards.', 'Nope: stop any action (except a Kitten or Defuse). Play it any time, even on someone else\'s turn.', 'Cat cards: a matching pair steals a random card from another player.'] },
+      { h: 'How to win', p: 'The last player who hasn\'t exploded wins.' }
+    ],
+    links: [['Exploding Kittens rules (UltraBoardGames)', 'https://www.ultraboardgames.com/exploding-kittens/game-rules.php']]
+  },
+
+  'taco-cat-goat-cheese-pizza': {
+    sections: [
+      { h: 'What you need', p: '64 cards. 3–8 players.' },
+      { h: 'Setup', p: 'Deal all the cards face down. Don\'t look.' },
+      { h: 'Playing', li: ['Take turns flipping your top card into the middle while saying the next word: "Taco, Cat, Goat, Cheese, Pizza", then start over.', 'When the card matches the word you said, everyone slaps the pile. The last hand down takes the whole pile.'] },
+      { h: 'Gesture cards', li: ['Gorilla: beat your chest, then slap.', 'Narwhal: put your hands together over your head like a horn, then slap.', 'Groundhog: slap the table with both hands, then slap the pile.', 'Wrong move or last to slap: you take the pile.'] },
+      { h: 'How to win', p: 'When you\'re out of cards, keep going. You win by being the first to correctly slap the next match.' }
+    ],
+    links: [['Rules (UltraBoardGames)', 'https://www.ultraboardgames.com/taco-cat-goat-cheese-pizza/game-rules.php']]
+  },
+
+  'sleeping-queens': {
+    sections: [
+      { h: 'What you need', p: '79 cards: 12 Queens, Kings, Knights, Dragons, Sleeping Potions, Wands, Jesters and number cards. 2–5 players.' },
+      { h: 'Setup', p: 'Lay the 12 Queens face down in the middle. Deal 5 cards each.' },
+      { h: 'On your turn (do one thing, then draw back to 5)', li: ['King: wake up a sleeping Queen and keep her.', 'Knight: steal another player\'s Queen. They can block it with a Dragon.', 'Sleeping Potion: put another player\'s Queen back to sleep. They can block it with a Wand.', 'Jester: flip the top card. A power card goes in your hand and you go again. A number: count around the table from you; that player wakes a Queen.', 'Or discard: one card (draw 1), a pair of the same number (draw 2), or a math equation like 2 + 3 = 5 (draw that many).'] },
+      { h: 'Special Queens', li: ['Rose Queen: wake her and you also wake one more Queen.', 'Cat Queen and Dog Queen don\'t get along. You can\'t have both.', 'Each Queen\'s points are printed on her card.'] },
+      { h: 'How to win', li: ['2–3 players: first to 5 Queens or 50 points.', '4–5 players: first to 4 Queens or 40 points.', 'If all Queens are awake first, the most points wins.'] }
+    ],
+    links: [['Sleeping Queens rules (UltraBoardGames)', 'https://www.ultraboardgames.com/sleeping-queens/game-rules.php']]
   }
 };

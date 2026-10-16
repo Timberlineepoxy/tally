@@ -85,7 +85,7 @@
   G('Racko', 'rounds', { target: 500, r: 'Going Racko scores 75 · 5 per card in order from the front · first to 500',
     q: [['Racko', 75], ['Card in order', 5]] });
   G('Mille Bornes', 'rounds', { target: 5000, r: 'Miles traveled plus safety and trip bonuses · first to 5,000',
-    q: [['Trip complete', 400], ['Safety', 100], ['Coup fourré', 300], ['All 4 safeties bonus', 300], ['Safe trip', 300], ['Shutout', 500]] });
+    q: [['Trip complete', 400], ['Safety', 100], ['Coup fourré', 300], ['All 4 safeties bonus', 300], ['Safe trip', 300], ['Delayed action', 300], ['Extension', 200], ['Shutout', 500]] });
   G('Pit', 'rounds', { target: 500, r: 'Corner the market to score that commodity · first to 500' });
   G('Skyjo', 'rounds', { win: 'low', target: 100, r: 'Game ends when someone hits 100 · lowest total wins · ender doubles if not lowest' });
   G('Flip 7', 'rounds', { target: 200, r: 'Bank your cards or bust · Flip 7 bonus +15 · first to 200', q: [['Flip 7 bonus', 15]] });
