@@ -47,14 +47,14 @@
       if (b === 0) return t === 0 ? 10 * n + x : -10 * n;
       return t === b ? 20 * b + x : -10 * Math.abs(t - b);
     },
-    rage: m => { const b = m.b | 0, t = m.t | 0; return t + (t === b ? 10 : -5) + (m.x | 0); }
+    rage: m => { const b = m.b | 0, t = m.t | 0; return t + (t === b ? (b === 0 ? 5 : 10) : 0) + (m.x | 0); }
   };
   const CALC_INFO = {
     spades: { bonus: false, hint: 'Bid 0 is nil: +100 if you take no tricks, −100 if you do' },
     ohhell: { bonus: false, hint: '' },
     wizard: { bonus: false, hint: '' },
     skullking: { bonus: true, hint: 'Bonuses only count when the bid is exact' },
-    rage: { bonus: true, hint: 'Bonus Rage cards: +5 or −5 each' }
+    rage: { bonus: true, hint: 'Bonus Rage +5, Mad Rage −5 for the trick winner' }
   };
 
   function roundCount(g) {

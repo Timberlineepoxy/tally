@@ -69,14 +69,14 @@
   G('Skull King', 'calc', { calc: 'skullking', rounds: 10, rl: 'cards',
     r: 'Bid exactly: 20 per trick + bonuses · miss: lose 10 per trick off · bid zero: ±10 × round' });
   G('Rage', 'calc', { calc: 'rage', rounds: 10, names: range(10, 1).map(n => n + (n === 1 ? ' card' : ' cards')),
-    r: '1 per trick · exact bid +10, missed bid −5 · plus or minus bonus cards' });
+    r: '1 per trick · exact bid +10 (+5 for a correct zero) · Bonus and Mad Rage cards ±5' });
   G('Pinochle', 'rounds', { teams: true, target: 1500, r: 'Meld plus counters each hand · set if you miss the bid · first to 1,500 (set yours)' });
   G('Rook', 'rounds', { teams: true, target: 500, r: 'Bid team scores counters if they make it, loses the bid if not · first to 500' });
   G('Bid Whist', 'rounds', { teams: true, target: 7, r: 'Books over six count toward the bid · first to 7' });
-  G('Whist', 'rounds', { teams: true, r: '1 point per trick over six · set the target you play to' });
+  G('Whist', 'rounds', { teams: true, target: 7, r: '1 point per trick over six · first to 7 (5 in British whist)' });
   G('500 (Five Hundred)', 'rounds', { teams: true, target: 500, r: 'Make your bid to score it, miss and lose it · first to 500 (−500 loses)' });
-  G('Pitch', 'rounds', { teams: true, target: 11, r: 'High, Low, Jack, Game · bidder sets back if short · first to 11 (some play 21)' });
-  G('Smear', 'rounds', { teams: true, target: 11, r: 'High, Low, Jack, Game · first to 11 (some play 21)' });
+  G('Pitch', 'rounds', { teams: true, target: 21, r: 'High, Low, Jack, Game · bidder sets back if short · first to 21' });
+  G('Smear', 'rounds', { teams: true, target: 21, r: 'High, Low, Jack, Game and more · usually first to 21' });
   G('Sheepshead', 'rounds', { r: 'Wisconsin\'s game · points move between picker and the rest each hand' });
   G('Bridge', 'rounds', { teams: true, r: 'Enter each side\'s points per hand · set the target you play to' });
 

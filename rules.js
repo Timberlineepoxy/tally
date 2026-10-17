@@ -829,5 +829,378 @@ window.TALLY_RULES = {
       { h: 'On your turn', li: ['Flip any 2 cards face up.', 'If they match, keep the pair and go again.', 'If they don\'t, flip them back face down where they were. Next player\'s turn.', 'Try to remember where everything is!'] },
       { h: 'How to win', p: 'When all pairs are found, the player with the most pairs wins.' }
     ]
+  },
+  // ───── Batch 5: the rest of the card games ─────
+  'spades-cutthroat': {
+    sections: [
+      { h: 'How it\'s different', p: 'Cutthroat Spades is regular Spades with no partners: everyone plays for themselves. 3 or 4 players.' },
+      { h: 'Playing', li: ['Deal out the cards (13 each with 4 players; with 3 players, deal 17 each and leave one card out).', 'Everyone bids how many tricks they\'ll win. Bidding 0 is nil.', 'Follow suit if you can. Spades always win over other suits, and can\'t be led until one has been played.'] },
+      { h: 'Scoring', li: ['Make your bid: 10 per trick bid, plus 1 for each extra trick (a bag).', 'Miss it: lose 10 per trick bid. Every 10 bags costs 100.', 'Nil: +100 if you take no tricks, −100 if you take any.', 'Tally works this out when you enter bids and tricks.'] },
+      { h: 'How to win', p: 'First to 500 wins.' }
+    ],
+    links: [['Spades rules (pagat.com)', 'https://www.pagat.com/auctionwhist/spades.html']]
+  },
+
+  'oh-hell': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck, Aces high. 3–7 players.' },
+      { h: 'The hands', p: 'Deal 10 cards each with 3–5 players (8 with 6, 7 with 7). Each hand deals one fewer card, down to 1, then back up again.' },
+      { h: 'Trump', p: 'After the deal, turn up the next card. Its suit is trump for that hand.' },
+      { h: 'Bidding', li: ['Starting left of the dealer, everyone says how many tricks they\'ll win. 0 is allowed.', 'The dealer bids last and can\'t make the bids add up to the number of cards dealt, so somebody has to miss.'] },
+      { h: 'Playing tricks', p: 'Follow suit if you can. If you can\'t, play anything. The highest trump wins, or the highest card of the suit led.' },
+      { h: 'Scoring', p: 'Win exactly your bid: 10 plus your bid. Miss it by any amount: 0. (A popular version gives 1 per trick plus 10 for an exact bid.)' },
+      { h: 'How to win', p: 'Highest total after the last hand wins.' }
+    ],
+    note: 'Oh Hell has lots of scoring systems. Tally uses "10 plus your bid". If your family scores differently, type each round\'s points in directly.',
+    links: [['Oh Hell rules (pagat.com)', 'https://www.pagat.com/exact/ohhell.html']]
+  },
+
+  'wizard': {
+    sections: [
+      { h: 'What you need', p: 'The Wizard deck: 60 cards, 52 numbered cards in 4 colors plus 4 Wizards and 4 Jesters. 3–6 players.' },
+      { h: 'Rounds', p: 'Round 1 deals 1 card each, round 2 deals 2, and so on until the deck runs out: 20 rounds with 3 players, 15 with 4, 12 with 5, 10 with 6.' },
+      { h: 'Trump', p: 'Turn up the next card. A Jester means no trump. A Wizard means the dealer picks trump. In the last round there\'s no trump.' },
+      { h: 'Bidding', p: 'Starting left of the dealer, everyone says how many tricks they\'ll win.' },
+      { h: 'Playing tricks', li: ['Follow suit if you can. Wizards and Jesters can be played any time.', 'The first Wizard played wins the trick. Otherwise the highest trump, then the highest card of the suit led.', 'Jesters always lose (unless only Jesters are played).'] },
+      { h: 'Scoring', li: ['Exactly right: 20 plus 10 per trick won.', 'Wrong: lose 10 for each trick you were off.'] },
+      { h: 'How to win', p: 'Highest total after the last round wins.' }
+    ],
+    links: [['Wizard rules (UltraBoardGames)', 'https://www.ultraboardgames.com/wizard/game-rules.php']]
+  },
+
+  'skull-king': {
+    sections: [
+      { h: 'What you need', p: 'The Skull King deck: 4 suits of numbered cards (black is trump) plus Pirates, Mermaids, Escapes, the Skull King and a Tigress (or Scary Mary in older boxes). 2–8 players.' },
+      { h: 'Rounds and bidding', p: '10 rounds: deal 1 card in round 1 up to 10 in round 10. Everyone bids at the same time: say "Yo-ho-ho!" and show fingers for your bid (a fist for 0).' },
+      { h: 'Playing tricks', li: ['Follow the suit led if you play a numbered card. Special cards can be played any time.', 'Black cards beat the other suits.', 'Pirates beat all numbered cards (and Mermaids).', 'The Skull King beats Pirates. A Mermaid beats the Skull King.', 'Escape always loses. The Tigress is played as a Pirate or an Escape; you choose.'] },
+      { h: 'Scoring', li: ['Bid right (1 or more): 20 per trick.', 'Bid wrong: lose 10 per trick you were off.', 'Bid 0 and take nothing: 10 × the round number. Bid 0 and take any tricks: lose 10 × the round number.', 'Bonuses only count when your bid is right: +30 for each Pirate your Skull King captures. Other bonuses (a Mermaid catching the Skull King, capturing 14s) depend on your box, so check your rulebook.'] },
+      { h: 'How to win', p: 'Highest total after 10 rounds wins.' }
+    ],
+    note: 'The older and newer Skull King boxes differ (Scary Mary vs Tigress, some bonus values). Use your box\'s bonuses; Tally adds whatever you type in the Bonus box.',
+    links: [['Skull King rules (Official Game Rules)', 'https://officialgamerules.org/game-rules/skull-king/']]
+  },
+
+  'rage': {
+    sections: [
+      { h: 'What you need', p: 'The Rage deck: colored number cards plus Rage action cards.' },
+      { h: 'Rounds', p: '10 rounds: deal 10 cards in round 1, then 9, down to 1 card in round 10. The leftover pile sets trump: flip its top card (skip action cards).' },
+      { h: 'Bidding', p: 'In turn, starting left of the dealer, everyone bids how many tricks they\'ll win (0 up to the cards in hand).' },
+      { h: 'Playing tricks', li: ['Follow suit if you can. If you can\'t, play anything, including an action card.', 'Highest trump wins, otherwise the highest card of the suit led.'] },
+      { h: 'Rage cards', li: ['Out Rage: no trump for the rest of the round (until a Change Rage).', 'Change Rage: pick a new trump color.', 'Wild Rage: name a color. It\'s the highest card of that color.', 'Bonus Rage: whoever wins the trick gets +5.', 'Mad Rage: whoever wins the trick gets −5.'] },
+      { h: 'Scoring', p: '+1 per trick you win, +10 if you got your bid exactly (+5 for correctly bidding 0), plus or minus 5 for Bonus and Mad Rage cards you took. A missed bid just gets no bonus.' },
+      { h: 'How to win', p: 'Highest total after 10 rounds wins.' }
+    ],
+    links: [['Rage rules (UltraBoardGames)', 'https://www.ultraboardgames.com/rage/game-rules.php']]
+  },
+
+  'pinochle': {
+    sections: [
+      { h: 'What you need', p: 'A Pinochle deck: 48 cards, two each of A, 10, K, Q, J, 9 in every suit. The 10 ranks just below the Ace. 4 players in 2 teams.' },
+      { h: 'Bidding', li: ['Deal 12 cards each.', 'Starting left of the dealer, bid in steps of 10, from 250. Pass and you\'re out of the bidding.', 'If everyone else passes, the dealer has to take it at 250.', 'The winner names trump. Their partner passes them 4 cards, and they pass 4 back.'] },
+      { h: 'Meld (lay down your combos)', li: ['Run in trump (A-10-K-Q-J): 150.', 'Royal marriage (trump K-Q): 40. Other marriage (K-Q same suit): 20.', 'Pinochle (Jack of diamonds + Queen of spades): 40. Double pinochle: 300.', 'Aces around (one Ace of each suit): 100. Kings around: 80. Queens: 60. Jacks: 40. (Double sets score 10 times more.)', 'Nine of trump (dix): 10.'] },
+      { h: 'Playing tricks', li: ['Follow suit if you can, and beat the card that\'s winning if you can.', 'No card of that suit? You must trump if you can.', 'Counters: every A, 10 and K you win is worth 10, plus 10 for the last trick (250 total).'] },
+      { h: 'Scoring', li: ['If the bidding team\'s meld plus counters reaches their bid, they score all of it.', 'If not, they "go set" and lose the amount they bid.', 'The other team keeps their meld if they take at least one counter.'] },
+      { h: 'How to win', p: 'First team to 1,500 wins.' }
+    ],
+    note: 'Pinochle varies a lot from family to family (meld values, minimum bid, passing cards). Put yours in House rules.',
+    links: [['Pinochle rules (pagat.com)', 'https://www.pagat.com/marriage/pinmain.html']]
+  },
+
+  'rook': {
+    sections: [
+      { h: 'What you need', p: 'A Rook deck: 4 colors numbered 1–14 plus the Rook bird card. 4 players in 2 teams.' },
+      { h: 'Setup (Kentucky Rook)', p: 'Take out the 2s, 3s and 4s. Deal 10 cards each and put 5 in the middle as the nest.' },
+      { h: 'Bidding', li: ['Bid in steps of 5, starting at 100. Pass and you\'re out.', 'The winner takes the nest, puts back 5 cards (no point cards), and names trump.'] },
+      { h: 'Card order and points', li: ['High to low: 1, 14, 13 … 5. The Rook is the highest trump.', 'Points: 1s are 15, 14s and 10s are 10, 5s are 5, the Rook is 20. 180 in all.'] },
+      { h: 'Playing tricks', p: 'Follow color if you can; otherwise play anything. The Rook counts as a trump.' },
+      { h: 'Scoring', p: 'Make your bid and you score what you took. Miss it and you lose the bid. The other team always scores what they took.' },
+      { h: 'How to win', p: 'First team to 500 wins.' }
+    ],
+    note: 'The Rook box\'s own tournament rules are a bit different (1s also removed, 9 cards each, bids from 70, play to 300). Use whichever your family plays.',
+    links: [['Rook rules (pagat.com)', 'https://www.pagat.com/kt5/rook.html']]
+  },
+
+  'bid-whist': {
+    sections: [
+      { h: 'What you need', p: 'A standard deck plus 2 Jokers (big and little). 4 players in 2 teams.' },
+      { h: 'Setup', p: 'Deal 12 cards each. The last 6 go face down as the kitty.' },
+      { h: 'Bidding', li: ['One time around. Each bid is a number from 3 to 7 (books over 6) plus "uptown" (high cards win), "downtown" (low cards win) or "no trump".', 'No trump beats the same number uptown or downtown.', 'If the first three pass, the dealer must bid.', 'The winner takes the kitty, discards 6 (these count as their first book) and names trump.'] },
+      { h: 'Card order', li: ['Uptown: big Joker, little Joker, A, K … 2.', 'Downtown: big Joker, little Joker, A, 2, 3 … K.'] },
+      { h: 'Playing', p: 'Follow suit if you can. If you can\'t, trump or throw off. Highest trump wins, or the best card of the suit led.' },
+      { h: 'Scoring', li: ['Each book over 6 is 1 point.', 'Make your bid and you score what you took. Miss it and you lose the bid. No trump bids count double.'] },
+      { h: 'How to win', p: 'First team to 7 (or the other team falls to −7).' }
+    ],
+    links: [['Bid Whist rules (pagat.com)', 'https://www.pagat.com/auctionwhist/bidwhist.html']]
+  },
+
+  'whist': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 4 players in 2 teams, partners across from each other.' },
+      { h: 'Setup', p: 'Deal 13 cards each. The dealer\'s last card is turned face up: its suit is trump.' },
+      { h: 'Playing', p: 'The player left of the dealer leads. Follow suit if you can; if not, play anything. Highest trump wins, otherwise the highest card of the suit led.' },
+      { h: 'Scoring', li: ['The team that wins more tricks scores 1 point for each trick over 6.', 'Optional honors: holding all four of the trump A, K, Q, J scores 4; three of them scores 2.'] },
+      { h: 'How to win', p: 'First to 7 in American whist (5 in British whist).' }
+    ],
+    links: [['Whist rules (pagat.com)', 'https://www.pagat.com/whist/whist.html']]
+  },
+
+  '500-five-hundred': {
+    sections: [
+      { h: 'What you need', p: 'A 43-card deck: black suits 5 to Ace, red suits 4 to Ace, plus 1 Joker. 4 players in 2 teams.' },
+      { h: 'Setup', p: 'Deal 10 cards each and 3 face down as the kitty.' },
+      { h: 'Bidding', li: ['Bid how many tricks (6–10) and a trump suit or No Trumps. Suits rank: No Trumps, Hearts, Diamonds, Clubs, Spades.', 'Misère (lose every trick, playing alone) and Open Misère are special bids.', 'The winner takes the kitty and discards 3.'] },
+      { h: 'Card order', p: 'The Joker is highest, then the Jack of trump (right bower), then the other Jack of the same color (left bower), then A, K, Q, 10 …' },
+      { h: 'Scoring', li: ['Bid values: 6 Spades 40, 6 Clubs 60, 6 Diamonds 80, 6 Hearts 100, 6 No Trumps 120. Each extra trick bid adds 100 (10 No Trumps is 520).', 'Misère 250, Open Misère 500.', 'Make it: score the bid. Miss it: lose the bid.', 'The other team gets 10 per trick they win.', 'Win all 10 tricks: at least 250.'] },
+      { h: 'How to win', p: 'Reach 500 by making a bid. Fall to −500 and you lose.' }
+    ],
+    links: [['500 rules (pagat.com)', 'https://www.pagat.com/euchre/500.html']]
+  },
+
+  'pitch': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 4 players in 2 teams.' },
+      { h: 'Bidding', li: ['Deal 6 cards each.', 'One time around: bid 2, 3, 4 or "smudge" (all four points and every trick).', 'The dealer can steal the bid by matching it. If everyone passes, the dealer must bid 2.', 'The bidder\'s first card played sets trump.'] },
+      { h: 'The 4 points', li: ['High: the highest trump played.', 'Low: whoever wins the lowest trump played.', 'Jack: whoever wins the Jack of trump.', 'Game: most card points in tricks won (A 4, K 3, Q 2, J 1, 10 counts 10).'] },
+      { h: 'Scoring', p: 'Make your bid and you score the points you took. Miss it and you go back (lose) the amount you bid. The other team always scores what they took.' },
+      { h: 'How to win', p: 'First to 21, but only at the end of a hand where you made your bid.' }
+    ],
+    links: [['Pitch rules (pagat.com)', 'https://www.pagat.com/allfours/pitch.html']]
+  },
+
+  'smear': {
+    sections: [
+      { h: 'What it is', p: 'Smear is Wisconsin\'s version of Pitch, and every town plays it a little differently.' },
+      { h: 'Common differences from Pitch', li: ['Jokers may be added as low trumps, worth 1 point to whoever takes them.', 'The other Jack of the same color ("jick" or off-jack) is often a trump, worth 1 point.', 'Low goes to the player who held the lowest trump.', 'Players may discard and draw after bidding.'] },
+      { h: 'Playing', p: 'Bid for the points, the bidder sets trump, and you play tricks like Pitch: high, low, jack, game, plus any extra points your version uses.' },
+      { h: 'How to win', p: 'Usually first to 21 (some groups play to 15 or 52).' }
+    ],
+    note: 'Because Smear changes so much from table to table, write your version in House rules so everyone plays the same way.',
+    links: [['Smear rules (pagat.com)', 'https://www.pagat.com/allfours/schmier.html']]
+  },
+
+  'sheepshead': {
+    sections: [
+      { h: 'What you need', p: '32 cards (7 through Ace). 3–5 players (5 is most common).' },
+      { h: 'Trump order', p: 'There are 14 trumps: all the Queens, then all the Jacks (clubs, spades, hearts, diamonds), then the diamonds A, 10, K, 9, 8, 7. Other suits go A, 10, K, 9, 8, 7.' },
+      { h: 'Card points', p: 'Ace 11, 10 is 10, King 4, Queen 3, Jack 2. 120 points in all.' },
+      { h: 'The deal and the picker', li: ['With 5 players, deal 6 cards each and 2 face down as the blind.', 'Starting left of the dealer, each player can pick up the blind. The picker buries 2 cards (their points count for the picker).', 'The picker\'s partner is whoever holds the Jack of diamonds (or the picker calls an Ace, depending on your table).'] },
+      { h: 'Winning a hand', li: ['The picker\'s side needs 61 or more.', 'Lose with 30–59: pay 1. Under 30 (schneider): pay 2. No tricks: pay 3.', 'If the picker\'s side loses, they pay double.', 'If nobody picks, play "leasters": fewest points wins.'] }
+    ],
+    note: 'Sheepshead table rules vary a lot (calling an Ace vs Jack of diamonds, doublers, cracking). Put yours in House rules.',
+    links: [['Sheepshead rules (pagat.com)', 'https://www.pagat.com/schafk/shep.html']]
+  },
+
+  'bridge': {
+    sections: [
+      { h: 'The basics', p: 'Bridge is a deep game with a long rulebook. This is just the overview to get started.' },
+      { h: 'Setup', p: '4 players in 2 teams, partners across from each other. Deal all 52 cards, 13 each.' },
+      { h: 'The auction', li: ['Starting with the dealer, players bid. A bid is a number (tricks over 6) and a suit or No Trump, like "2 hearts" (8 tricks with hearts as trump).', 'Suits rank: No Trump, spades, hearts, diamonds, clubs.', 'You can also pass, double or redouble. Three passes in a row ends it; the last bid is the contract.'] },
+      { h: 'Playing', li: ['The declarer plays both their hand and their partner\'s. The partner\'s cards (dummy) go face up.', 'Follow suit if you can. Highest trump wins, or the highest card of the suit led.'] },
+      { h: 'Scoring (basics)', li: ['Each trick bid and made over 6: clubs and diamonds 20, hearts and spades 30, No Trump 40 for the first then 30.', '100 of these points makes a game. Win 2 games for the rubber.', 'Miss your contract and the other team scores for each trick you fell short.'] }
+    ],
+    links: [['Bridge rules (pagat.com)', 'https://www.pagat.com/auctionwhist/bridge.html'], ['Learn to play (ACBL)', 'https://www.acbl.org/learn_page/how-to-play-bridge/']]
+  },
+
+  'casino': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 2–4 players (4 can play as partners).' },
+      { h: 'Setup', p: 'Deal 4 cards to each player and 4 face up on the table. When everyone runs out, deal 4 more each (none to the table) until the deck is gone.' },
+      { h: 'On your turn (play one card)', li: ['Capture: take table cards that match your card, or groups that add up to it (Ace 1, number cards their number). Face cards only capture the same face card.', 'Build: add your card to table cards to make a total you can capture next turn, and call it ("building 8").', 'Trail: just put a card face up on the table.'] },
+      { h: 'End of a hand', p: 'Whoever made the last capture takes any cards left on the table.' },
+      { h: 'Scoring (11 points a hand)', li: ['Most cards 3. Most spades 1.', 'Big Casino (10 of diamonds) 2. Little Casino (2 of spades) 1.', 'Each Ace 1.', 'Many families also give 1 for each sweep (clearing the whole table).'] },
+      { h: 'How to win', p: 'First to 21 wins.' }
+    ],
+    links: [['Casino rules (pagat.com)', 'https://www.pagat.com/fishing/casino.html']]
+  },
+
+  'thirty-one-scat': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck and 3 lives (tokens) per player. 2–9 players.' },
+      { h: 'Card values', p: 'Ace 11, face cards 10, others their number. Your score is the total of cards in one suit. The best hand is 31: an Ace and two 10-point cards of the same suit.' },
+      { h: 'On your turn', li: ['Deal 3 cards each and start a discard pile.', 'Draw from the pile or the discard pile, then discard one.', 'Or knock instead of drawing: everyone else gets one more turn, then all hands are shown.'] },
+      { h: 'Losing lives', li: ['After a knock, the lowest hand loses a life. If the knocker is lowest, they lose 2.', 'If you get 31, show it right away: everyone else loses a life.'] },
+      { h: 'How to win', p: 'When you\'re out of lives you\'re out. The last player left wins.' }
+    ],
+    links: [['Thirty-One rules (pagat.com)', 'https://www.pagat.com/draw/scat.html']]
+  },
+
+  'blackjack-chips': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally keeps track of everyone\'s chips. Tap a player\'s number to add or subtract their winnings.' },
+      { h: 'The basics', li: ['Card values: number cards are their number, face cards 10, Aces 1 or 11.', 'Everyone bets, then gets 2 cards. The dealer gets 2 cards, one face up.', 'Take more cards ("hit") or stop ("stand"). Go over 21 and you bust and lose your bet.', 'The dealer must hit until they have 17 or more.', 'Closer to 21 than the dealer wins your bet back plus the same again. A 2-card 21 (blackjack) usually pays 3 to 2.'] },
+      { h: 'How to win', p: 'Whoever has the most chips when you stop wins.' }
+    ],
+    note: 'Home blackjack rules (doubling down, splitting, who deals) vary. Agree before you start.'
+  },
+
+  'poker-chips': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally keeps track of everyone\'s chip stack. Tap a player\'s number to add or subtract after each hand. You\'re out at 0.' },
+      { h: 'Hand rankings (best to worst)', li: ['Royal flush (A-K-Q-J-10, same suit)', 'Straight flush (5 in a row, same suit)', 'Four of a kind', 'Full house (3 of a kind + a pair)', 'Flush (5 of the same suit)', 'Straight (5 in a row)', 'Three of a kind', 'Two pair', 'One pair', 'High card'] },
+      { h: 'Texas Hold\'em in short', li: ['Everyone gets 2 cards face down. Bet.', '3 shared cards are turned up (the flop). Bet.', 'A 4th shared card (the turn). Bet. A 5th (the river). Bet.', 'Make your best 5-card hand from your 2 cards and the 5 shared cards. Best hand left in wins the pot.'] },
+      { h: 'How to win', p: 'Last player with chips wins, or the most chips when you stop.' }
+    ]
+  },
+
+  'spite-and-malice': {
+    sections: [
+      { h: 'What you need', p: 'Two standard decks. 2 players (more can play with extra decks).' },
+      { h: 'Setup', p: 'Deal each player a pay-off pile of 20 cards, face down with the top card face up, and a hand of 5. The rest is the stock.' },
+      { h: 'On your turn', li: ['Draw back up to 5.', 'Play onto the center piles: they start with an Ace and go up to Queen. Kings are wild.', 'You can play from your hand, the top of your pay-off pile, or the top of your 4 side piles.', 'Empty your hand? Draw 5 more and keep going.', 'End your turn by putting a card from your hand onto one of your side piles.'] },
+      { h: 'How to win', p: 'The first player to play the last card of their pay-off pile wins.' }
+    ],
+    links: [['Spite and Malice rules (pagat.com)', 'https://www.pagat.com/patience/spitemal.html']]
+  },
+
+  'durak': {
+    sections: [
+      { h: 'What you need', p: '36 cards (6 through Ace). 2–6 players.' },
+      { h: 'Setup', p: 'Deal 6 cards each. Turn up the next card: its suit is trump. Put the rest crosswise on top of it.' },
+      { h: 'Attacking and defending', li: ['The attacker plays a card at the defender (the player on their left).', 'The defender beats it with a higher card of the same suit, or any trump.', 'Other players can add more attack cards that match a number already played (up to 6 cards).', 'If the defender beats everything, the cards are thrown away and the defender attacks next.', 'If not, the defender picks them all up and loses their turn to attack.', 'After each round, everyone draws back up to 6.'] },
+      { h: 'How it ends', p: 'There\'s no winner, only a loser. Players drop out as they run out of cards. The last one holding cards is the durak (the fool).' }
+    ],
+    links: [['Durak rules (pagat.com)', 'https://www.pagat.com/beating/podkidnoy_durak.html']]
+  },
+
+  'speed-spit': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 2 players.' },
+      { h: 'Setup (Speed)', li: ['Each player gets a 15-card draw pile and a 5-card hand.', 'In the middle: two 10-card side piles on the ends, and two cards face down between them.'] },
+      { h: 'Playing (no turns)', li: ['Flip the two middle cards together.', 'Play cards from your hand that are one higher or one lower than either middle card (Ace and King connect).', 'One hand, one card at a time. Refill your hand to 5 from your draw pile.', 'When both players are stuck, flip new middle cards from the side piles.'] },
+      { h: 'How to win', p: 'The first player to get rid of all their cards wins.' }
+    ],
+    note: 'Spit is the same idea with 5 piles laid out in front of each player instead of a hand.',
+    links: [['Speed and Spit rules (pagat.com)', 'https://www.pagat.com/patience/spit.html']]
+  },
+
+  'cheat-i-doubt-it': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 3–10 players.' },
+      { h: 'Setup', p: 'Deal out all the cards.' },
+      { h: 'On your turn', li: ['Play one or more cards face down and say what they are. The ranks go in order: Aces, then 2s, then 3s, up to Kings, then back to Aces.', 'You can lie about what you played.'] },
+      { h: 'Calling cheat', li: ['Anyone can shout "Cheat!" (or "I doubt it!").', 'Flip the cards over. If they were all what the player said, the challenger picks up the whole pile.', 'If any were wrong, the player who lied picks it up.'] },
+      { h: 'How to win', p: 'The first player to get rid of all their cards (and survive a challenge on their last play) wins.' }
+    ],
+    links: [['Cheat rules (pagat.com)', 'https://www.pagat.com/beating/cheat.html']]
+  },
+
+  'pig-card-game': {
+    sections: [
+      { h: 'What you need', p: 'One set of 4 matching cards per player (like four Aces, four Kings…). 3–13 players.' },
+      { h: 'Playing', li: ['Deal 4 cards each.', 'Everyone at once passes one card face down to the left and picks up the card from the right.', 'Keep passing until someone has 4 of a kind.'] },
+      { h: 'Touch your nose!', li: ['When you get 4 of a kind, quietly touch your nose.', 'Everyone else touches their nose as soon as they notice.', 'The last one to touch their nose loses the round and gets a letter: P, then I, then G.'] },
+      { h: 'How to win', p: 'Spell PIG and you\'re out. The last player still in wins.' }
+    ],
+    links: [['Pig rules (pagat.com)', 'https://www.pagat.com/passing/pig.html']]
+  },
+
+  'president': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 4–7 players. 2s are highest, then A, K, Q … down to 3.' },
+      { h: 'Playing', li: ['Deal out all the cards.', 'The leader plays a single card or a set of the same rank (like a pair of 7s).', 'Going around, each player plays a higher card or set of the same size, or passes.', 'When everyone passes, the last player to play leads again with anything.'] },
+      { h: 'Ranks', li: ['The first player out is the President, the second the Vice-President, and the last is the Scum.', 'Next round, the Scum deals and gives their best card to the President, who gives back any card they don\'t want.'] },
+      { h: 'How to win', p: 'Play as many rounds as you like. A common way to score: 2 points for President, 1 for Vice-President, first to 11.' }
+    ],
+    note: 'President has tons of house rules (four of a kind flips the order, 2s clear the pile, and more). Put yours in House rules.',
+    links: [['President rules (pagat.com)', 'https://www.pagat.com/climbing/president.html']]
+  },
+
+  'kemps': {
+    sections: [
+      { h: 'What you need', p: 'A standard 52-card deck. 4 players in 2 teams (or more in teams).' },
+      { h: 'Before you start', p: 'Each team secretly agrees on a signal (like a wink) that means "I have four of a kind."' },
+      { h: 'Playing (no turns)', li: ['Deal 4 cards each and 4 face up in the middle.', 'Anyone can swap cards from their hand for middle cards, one-for-one, as fast as they like.', 'When nobody wants any, the dealer clears the middle and deals 4 new cards.'] },
+      { h: 'Calling', li: ['"Kemps!": you think your partner has four of a kind. Right, and the other team gets a letter. Wrong, and your team gets one.', '"Stop Kemps!": you think an opponent has four of a kind. Right, and their team gets a letter. Wrong, and yours does.'] },
+      { h: 'How to win', p: 'The first team to spell K-E-M-P-S loses. In Tally, tap the winning team each game.' }
+    ],
+    links: [['Kemps rules (pagat.com)', 'https://www.pagat.com/commerce/kemps.html']]
+  },
+
+  'magic-the-gathering': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks everyone\'s life. Everyone starts at 20; tap the buttons as you take damage or gain life. You\'re out at 0.' },
+      { h: 'The basics', li: ['Each player has their own deck (at least 60 cards) and draws 7 to start.', 'Your turn: untap your cards, draw a card, play one land and cast spells, attack, then cast more spells.', 'Lands make mana, which pays for your spells.', 'Creatures attack; the other player can block with their creatures.'] },
+      { h: 'How to win', li: ['Bring your opponent to 0 life.', 'Or they have to draw from an empty deck.', 'Or they get 10 poison counters.'] }
+    ],
+    note: 'Magic has a very long rulebook. This is just the basics.',
+    links: [['How to play (Wizards of the Coast)', 'https://magic.wizards.com/en/how-to-play']]
+  },
+
+  'magic-commander': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks everyone\'s life. Everyone starts at 40.' },
+      { h: 'How Commander is different', li: ['Your deck is exactly 100 cards: 99 plus your commander, a legendary creature.', 'Only one copy of each card (except basic lands).', 'Every card has to match your commander\'s colors.', 'Your commander starts face up in the command zone. You can cast it from there; each time after the first costs 2 more.', 'Usually 3–5 players, everyone against everyone.'] },
+      { h: 'How to win', li: ['Bring everyone else to 0 life.', 'A player who takes 21 combat damage from the same commander loses.', 'Plus the normal Magic ways to lose.'] }
+    ],
+    note: 'Track commander damage on the side, or in House rules notes.',
+    links: [['Commander format (Wizards of the Coast)', 'https://magic.wizards.com/en/formats/commander']]
+  },
+
+  'pok-mon-tcg': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks Prize cards taken. Tap +1 each time you Knock Out a Pokémon and take a Prize card.' },
+      { h: 'The basics', li: ['Each player has a 60-card deck and draws 7 to start.', 'One Active Pokémon fights; up to 5 more wait on your Bench.', 'Attach Energy cards to your Pokémon to pay for their attacks.', 'Pokémon can evolve once they\'ve been in play for a turn.', 'Each time you Knock Out an opponent\'s Pokémon, take one of your 6 Prize cards.'] },
+      { h: 'How to win', li: ['Take all your Prize cards.', 'Or your opponent has no Pokémon left in play.', 'Or your opponent can\'t draw a card at the start of their turn.'] }
+    ],
+    links: [['Learn to play (Pokémon)', 'https://tcg.pokemon.com/en-us/learn/']]
+  },
+
+  'yu-gi-oh': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks Life Points. Everyone starts at 8,000. Use the 100, 500 and 1,000 buttons, or tap a number to type any amount.' },
+      { h: 'The basics', li: ['Each player has a 40–60 card deck and draws 5 to start.', 'Your turn: draw, then summon monsters and play Spell and Trap cards, then battle, then end.', 'Monsters attack your opponent\'s monsters, or attack directly if they have none.'] },
+      { h: 'How to win', li: ['Bring your opponent\'s Life Points to 0.', 'Or they have to draw from an empty deck.'] }
+    ],
+    links: [['Official rulebook (Konami)', 'https://www.yugioh-card.com/en/rulebook/']]
+  },
+
+  'disney-lorcana': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks lore. Tap + whenever you quest. First to 20 wins.' },
+      { h: 'The basics', li: ['Each player has a deck of at least 60 cards (one or two ink colors, no more than 4 of a card) and draws 7.', 'Once per turn, you can put a card with the ink symbol face down in your inkwell. Each card in your inkwell gives you 1 ink to spend.', 'Play characters, items and actions by paying ink.', 'Characters quest to earn lore, or challenge your opponent\'s characters.'] },
+      { h: 'How to win', p: 'The first player to 20 lore wins.' }
+    ],
+    links: [['Rules and resources (Disney Lorcana)', 'https://www.disneylorcana.com/en-US/resources']]
+  },
+
+  'flesh-and-blood': {
+    sections: [
+      { h: 'Using Tally', p: 'Tally tracks your hero\'s life. Change the starting life on the setup screen to match your hero (it\'s printed on the hero card).' },
+      { h: 'The basics', li: ['Your hero card shows your starting life and your intellect (how many cards you draw up to at the end of your turn).', 'Pay for cards by "pitching" other cards from your hand for resources.', 'Attack with action cards and weapons. Defend with the cards in your hand.', 'At the end of your turn, draw back up to your intellect.'] },
+      { h: 'How to win', p: 'Bring your opponent\'s hero to 0 life.' }
+    ],
+    links: [['Quickstart rules (Flesh and Blood)', 'https://legacy.fabtcg.com/en/learn-to-play/quickstart-rules/']]
+  },
+
+  'uno-junior': {
+    sections: [
+      { h: 'What you need', p: 'The UNO Junior deck: 56 cards with animals, numbers and colors. 2–4 players.' },
+      { h: 'Three levels', li: ['Beginner: take out all the action cards.', 'Intermediate: add Skip, Reverse and Wild.', 'Advanced: use all 56 cards, including Draw One and Draw Two.'] },
+      { h: 'Setup', p: 'Deal 5 cards each. Flip one card to start the discard pile.' },
+      { h: 'On your turn', li: ['Match the top card by color, number or animal.', 'Can\'t match? Draw one card. If it matches, you can play it.', 'Skip, Reverse, Draw One and Draw Two work like in UNO. Wild lets you pick the color.', 'Say "UNO!" when you have one card left, or draw 2 if someone catches you.'] },
+      { h: 'How to win', p: 'The first player to play all their cards wins.' }
+    ],
+    links: [['UNO Junior rules (unorules.com)', 'https://www.unorules.com/uno-junior-rules/']]
+  },
+
+  'skip-bo-junior': {
+    sections: [
+      { h: 'What you need', p: 'The Skip-Bo Junior deck: 80 number cards and 16 Wild "?" cards.' },
+      { h: 'Setup', p: 'Deal each player a stockpile of 10 cards, face down. Flip the top card face up. The youngest player goes first.' },
+      { h: 'On your turn', li: ['The dealer gives you 3 cards face up as your hand.', 'Build piles in the middle: start with a 1 or a Wild, then go up one at a time to 10. Up to 4 piles, shared by everyone.', 'Play from your stockpile or your hand. When you play your top stockpile card, flip the next one.', 'Wild "?" cards can be any number.', 'Keep playing until you can\'t.'] },
+      { h: 'How to win', p: 'The first player to empty their stockpile wins. You don\'t have to empty your hand.' }
+    ],
+    links: [['Skip-Bo Junior rules (UltraBoardGames)', 'https://www.ultraboardgames.com/skip-bo/junior.php']]
+  },
+
+  'sequence-junior': {
+    sections: [
+      { h: 'What you need', p: 'The Sequence for Kids board (animal pictures), the animal cards and chips. 2–4 players.' },
+      { h: 'Setup', p: 'Everyone picks a chip color. Deal 3 cards each.' },
+      { h: 'On your turn', li: ['Play a card and put one of your chips on a matching animal on the board.', 'Draw a new card.', 'The corners are free spaces for everyone.'] },
+      { h: 'How to win', p: 'The first player to get 4 chips in a row (across, up and down, or diagonal) wins.' }
+    ],
+    note: 'Some boxes have special cards (like a unicorn that lets you go anywhere or remove a chip). Check your box.',
+    links: [['Sequence for Kids rules (Official Game Rules)', 'https://officialgamerules.org/game-rules/sequence-for-kids/']]
   }
 };
