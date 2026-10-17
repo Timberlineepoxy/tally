@@ -24,10 +24,11 @@
   G('Uno Flip!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500',
     q: [['Draw One', 10], ['Reverse / Skip / Flip', 20], ['Draw Five', 20], ['Skip Everyone', 30], ['Wild', 40], ['Wild Draw Two', 50], ['Wild Draw Color', 60]] });
   G('Uno Attack!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500',
-    q: [['Action card', 20], ['Wild card', 50]] });
-  G('Uno All Wild!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500 (set your own card values)' });
+    q: [['Skip / Reverse / Hit 2', 20], ['Discard All', 30], ['Wild', 50]] });
+  G('Uno All Wild!', 'winner', { target: 500, r: 'Round winner scores everyone else\'s cards · first to 500',
+    q: [['Wild', 20], ['Action Wild', 50]] });
   G('Uno Show \'Em No Mercy', 'wins', { r: 'Last player standing wins (25 cards and you\'re out) · tap the winner' });
-  G('Dos', 'winner', { target: 200, r: 'Round winner scores everyone else\'s cards · first to 200' });
+  G('Dos', 'winner', { target: 200, r: 'Round winner scores everyone else\'s cards · first to 200', q: [['Wild DOS', 20], ['Wild #', 40]] });
   G('Uno Golf', 'rounds', { win: 'low', rounds: 9, rl: 'Hole', r: 'Clear matching columns to cut your points · 9 holes · lowest total wins' });
   G('Phase 10', 'rounds', { win: 'low', phase: true, r: 'Finish all 10 phases first to win · points break ties, lowest wins',
     q: [['Card 1–9', 5], ['Card 10–12', 10], ['Skip', 15], ['Wild', 25]] });
@@ -48,7 +49,7 @@
   G('Canasta', 'rounds', { teams: true, target: 5000, r: 'Partners score melds, canastas and bonuses each hand · first to 5,000',
     q: [['Natural canasta', 500], ['Mixed canasta', 300], ['Going out', 100], ['Red three', 100], ['Joker', 50], ['Ace / 2', 20], ['8–K', 10], ['4–7 / black 3', 5]] });
   G('Hand and Foot', 'rounds', { teams: true, rounds: 4, rl: 'Hand', r: '4 hands · meld 50, 90, 120, 150 to go down · highest total wins',
-    q: [['Clean book', 500], ['Dirty book', 300], ['Going out', 100], ['Red three', 100], ['Joker', 50], ['Ace / 2', 20], ['8–K', 10], ['4–7', 5]] });
+    q: [['Clean book', 500], ['Dirty book', 300], ['Wild book', 1500], ['Going out', 100], ['Red three', 100], ['Joker', 50], ['Ace / 2', 20], ['8–K', 10], ['4–7', 5]] });
   G('Golf (card game)', 'rounds', { win: 'low', rounds: 9, rl: 'Hole', r: '9 holes · lowest total wins',
     q: [['Jack / Queen', 10], ['Ace', 1], ['King', 0]] });
   G('Quiddler', 'rounds', { rounds: 8, names: range(3, 10).map(n => n + ' cards'), r: '8 hands, 3 cards up to 10 · spell words, highest total wins',
@@ -115,7 +116,8 @@
   G('Here to Slay', 'wins', { r: 'Slay 3 monsters or own 6 hero classes' });
   G('Fluxx', 'wins', { r: 'Match the current Goal to win' });
   G('Bang!', 'wins', { r: 'Your role decides how you win' });
-  G('Throw Throw Burrito', 'wins', { r: 'Most points when the deck runs out wins' });
+  G('Throw Throw Burrito', 'rounds', { rounds: 2, r: 'Sets 1 point, burrito sets 2 · each bruise −1 · most points after 2 rounds',
+    q: [['Set of 3', 1], ['Burrito set', 2], ['Bruise', -1]] });
   G('Spot It!', 'wins', { r: 'Fastest eyes win · tap the winner of each game' });
   G('Blink', 'wins', { r: 'First to empty their draw pile wins' });
   G('Sequence', 'wins', { r: 'Make your sequences first · works with teams too' });

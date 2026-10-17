@@ -590,5 +590,244 @@ window.TALLY_RULES = {
       { h: 'How to win', li: ['2–3 players: first to 5 Queens or 50 points.', '4–5 players: first to 4 Queens or 40 points.', 'If all Queens are awake first, the most points wins.'] }
     ],
     links: [['Sleeping Queens rules (UltraBoardGames)', 'https://www.ultraboardgames.com/sleeping-queens/game-rules.php']]
+  },
+  // ───── Batch 4: more card games ─────
+  'uno-attack': {
+    sections: [
+      { h: 'What you need', p: 'The UNO Attack! cards and the card launcher (3 C batteries). 2–10 players.' },
+      { h: 'Setup', p: 'Deal 7 cards each. Load the rest into the launcher, take one out to start the discard pile, and close the lid.' },
+      { h: 'On your turn', li: ['Match the top card by color, number or symbol, or play a Wild.', 'Can\'t play? Press the launcher once. Take whatever shoots out (even cards stuck halfway). If nothing comes out, your turn is over.'] },
+      { h: 'Special cards', li: ['Discard All: discard every card in your hand of that color.', 'Hit 2: the next player presses the launcher twice, takes what comes out, and loses their turn.', 'Wild Attack-Attack: pick a color and any player. They press the launcher twice and take what comes out.', 'Skip and Reverse: same as UNO.', 'Older boxes also have Trade Hands, Wild All Hit and Wild Hit Fire.'] },
+      { h: 'UNO!', p: 'Say "UNO" when you play your second-to-last card. If you\'re caught, press the launcher twice.' },
+      { h: 'Scoring and winning', li: ['First out wins the round and scores everyone else\'s cards.', 'Number cards are their number. Skip, Reverse and Hit 2 are 20. Discard All and Trade Hands are 30. Wilds are 50.', 'First to 500 wins.'] }
+    ],
+    links: [['UNO Attack rules (unorules.com)', 'https://www.unorules.com/uno-attack-rules/']]
+  },
+
+  'uno-show-em-no-mercy': {
+    sections: [
+      { h: 'What you need', p: 'The UNO Show \'Em No Mercy deck: 168 cards. 2–6 players.' },
+      { h: 'Setup', p: 'Deal 7 cards each. Flip cards to start the discard pile until you get a number card.' },
+      { h: 'On your turn', li: ['Match the top card by color, number or symbol.', 'Can\'t play? Keep drawing until you get a card you can play, then play it.'] },
+      { h: 'Stacking', p: 'If someone hits you with a Draw card, you can play a Draw card of your own to pass it on, and the penalty adds up. Whoever can\'t (or won\'t) stack draws the whole total.' },
+      { h: 'Special cards', li: ['Draw 2 and Draw 4 (colored): the next player draws and loses their turn.', 'Skip: the next player loses their turn. Skip Everyone: you go again.', 'Reverse: play changes direction.', 'Discard All: discard all your cards of that color.', 'Wild Draw 6 and Wild Draw 10: the next player draws 6 or 10 and loses their turn.', 'Wild Reverse Draw 4: reverse direction, then the next player draws 4.', 'Wild Color Roulette: the next player names a color and flips cards until they hit it, keeping them all.', 'Play a 7: swap hands with any player. Play a 0: everyone passes their hand to the next player.'] },
+      { h: 'The Mercy rule', p: 'Anyone with 25 or more cards is out of the game.' },
+      { h: 'How to win', li: ['Get rid of all your cards, or be the last player left.', 'Optional scoring: number cards their number, colored action cards 20, Wilds 50, plus 250 for each player knocked out by the Mercy rule. First to 1,000 wins.'] }
+    ],
+    note: 'Rule sites disagree on stacking: some say your Draw card has to match or beat the total so far, others say it only has to match or beat the last card played. Agree before you start.',
+    links: [['No Mercy rules (unorules.com)', 'https://www.unorules.com/uno-show-em-no-mercy-rules/']]
+  },
+
+  'dos': {
+    sections: [
+      { h: 'What you need', p: 'The DOS deck: 108 cards (numbers in 4 colors, Wild DOS and Wild # cards). 2–4 players.' },
+      { h: 'Setup', p: 'Deal 7 cards each. Turn 2 cards face up in the middle. This is the Center Row.' },
+      { h: 'Matching (by number)', li: ['Single match: play a card with the same number on a Center Row card (any color).', 'Double match: play two cards that add up to a Center Row card\'s number.', 'Each Center Row card can take one match. You can match as many Center Row cards as you can in one turn.', 'Wild DOS counts as a 2 of any color. Wild # counts as any number in its own color.'] },
+      { h: 'Color bonuses', li: ['If your match is also the same color: add one card from your hand to the Center Row at the end of your turn.', 'If a double match is the same color: also make every other player draw 1.'] },
+      { h: 'End of your turn', li: ['Matched cards go to the discard pile. Refill the Center Row to 2 cards, then add any bonus cards.', 'Can\'t match anything? Draw 1. If you still can\'t match, put a card from your hand in the Center Row.'] },
+      { h: 'DOS!', p: 'Say "DOS" when you have 2 cards left. If someone says it first, draw 2.' },
+      { h: 'Scoring and winning', li: ['First out wins the round and scores everyone else\'s cards: numbers are their number, Wild DOS 20, Wild # 40.', 'First to 200 wins.'] }
+    ],
+    links: [['DOS rules (unorules.com)', 'https://www.unorules.com/dos-rules/']]
+  },
+
+  'contract-rummy': {
+    sections: [
+      { h: 'What you need', p: 'Two standard decks plus Jokers (one Joker fewer than the number of players). Best with 4 players, 3–5 work.' },
+      { h: 'The 7 contracts', li: ['1. Two groups of 3', '2. One group of 3 + one run of 4', '3. Two runs of 4', '4. Three groups of 3', '5. Two groups of 3 + one run of 4', '6. One group of 3 + two runs of 4', '7. Three runs of 4, using all your cards (no discard)', 'A group is 3 of the same rank. A run is 4 or more in a row in one suit.', 'Deal 10 cards in rounds 1–3 and 12 cards in rounds 4–7.'] },
+      { h: 'On your turn', li: ['Draw from the pile or take the top discard, then discard one card.', 'When you have the round\'s contract, lay it down (exactly the contract, once per round).', 'On later turns, you can add cards to anyone\'s melds.'] },
+      { h: '"May I?"', p: 'When a player draws from the pile instead of taking the discard, anyone else can ask to buy the discard. They take it plus one penalty card from the pile.' },
+      { h: 'Scoring and winning', li: ['When someone goes out, everyone else scores their leftover cards: number cards their number, J/Q/K 10, Aces 15, Jokers 15.', 'After 7 rounds, the lowest total wins.'] }
+    ],
+    note: 'Contract Rummy has lots of family versions (Liverpool, Shanghai, May I?) with different contracts, buy limits and card values. Put yours in House rules.',
+    links: [['Contract Rummy rules (pagat.com)', 'https://www.pagat.com/rummy/ctrummy.html']]
+  },
+
+  'canasta': {
+    sections: [
+      { h: 'What you need', p: 'Two standard decks plus 4 Jokers (108 cards). 4 players in 2 teams, partners across from each other.' },
+      { h: 'Setup', p: 'Deal 11 cards each. Turn one card up to start the discard pile; the rest is the stock.' },
+      { h: 'Wild cards and threes', li: ['Jokers and 2s are wild.', 'Red 3s: put them down right away and draw a replacement. Worth 100 each (800 for all four), but minus if your team hasn\'t melded.', 'Black 3s: discarding one stops the next player from taking the pile.'] },
+      { h: 'On your turn', li: ['Draw from the stock, or take the whole discard pile (see below).', 'Meld: 3 or more cards of the same rank. Each meld needs at least 2 real cards and no more than 3 wilds.', 'Your team\'s first meld must add up to at least 50 points (90 once your team has 1,500; 120 at 3,000).', 'Discard one card.'] },
+      { h: 'Taking the pile', li: ['You can take the pile if you can meld its top card with cards from your hand.', 'If there\'s a wild card in the pile, it\'s frozen: you need two real matching cards from your hand.'] },
+      { h: 'Canastas and going out', li: ['A canasta is a meld of 7 or more. Natural (no wilds): 500 bonus. Mixed: 300 bonus.', 'You can only go out once your team has at least one canasta. Going out is worth 100.'] },
+      { h: 'Scoring', p: 'Add your melded cards and bonuses, minus cards left in hand. Jokers 50, Aces and 2s 20, 8–King 10, 4–7 and black 3s 5.' },
+      { h: 'How to win', p: 'First team to 5,000 wins.' }
+    ],
+    links: [['Canasta rules (pagat.com)', 'https://www.pagat.com/rummy/canasta.html']]
+  },
+
+  'hand-and-foot': {
+    sections: [
+      { h: 'What you need', p: 'One more deck than the number of players (each with 2 Jokers). Usually 4 players in 2 teams.' },
+      { h: 'Setup', p: 'Each player gets two piles: a "hand" and a "foot" (13 cards each in the standard version). Play your hand first, then pick up your foot.' },
+      { h: 'Melds', li: ['Melds are 3 to 7 cards of the same rank (Aces down to 4s). A 7-card meld is a "pile" (book).', 'Jokers and 2s are wild. There must be at least twice as many real cards as wilds.', 'Your team\'s first meld each round must reach: 50 points (round 1), 90 (round 2), 120 (round 3), 150 (round 4).'] },
+      { h: 'On your turn', li: ['Draw 2 from the stock, or take the top 7 of the discard pile (you need 2 matching cards in hand to meld the top card).', 'Meld what you can, then discard one card.', 'Red 3s: lay them down and replace them. Black 3s block the next player from the pile.'] },
+      { h: 'Going out', li: ['Your team needs a set number of finished piles, usually two clean, two dirty and one all-wild.', 'Your partner must have started their foot, and you ask them first.'] },
+      { h: 'Scoring', li: ['Clean pile 500, dirty pile 300, wild pile 1,500, going out 100.', 'Red 3s +100 each (−100 if still in your hand or foot).', 'Cards: Jokers 50, 2s and Aces 20, 8–King 10, 4–7 and black 3s 5. Cards left in hand count against you.'] },
+      { h: 'How to win', p: 'After 4 rounds, the highest team total wins.' }
+    ],
+    note: 'Hand and Foot has more house versions than almost any card game (11 or 13 card piles, different book scores, different going-out rules). Put your family\'s version in House rules.',
+    links: [['Hand and Foot rules (pagat.com)', 'https://www.pagat.com/rummy/handfoot.html']]
+  },
+
+  'quiddler': {
+    sections: [
+      { h: 'What you need', p: 'The Quiddler deck: 118 letter cards, including double-letter cards (QU, IN, ER, CL, TH). 1–8 players.' },
+      { h: 'Rounds', p: '8 rounds. Deal 3 cards in round 1, then one more each round, up to 10 cards in round 8.' },
+      { h: 'On your turn', li: ['Draw from the pile or take the top discard, then discard one card.', 'You\'re trying to use your cards to spell words. Each word needs at least 2 cards. No names, abbreviations or hyphenated words.'] },
+      { h: 'Going out', li: ['When you can use all your cards but one in words, lay them down and discard the last card.', 'Everyone else gets one last turn, then lays down what words they can.'] },
+      { h: 'Scoring', li: ['Add up the points printed on the cards in your words. Subtract cards you couldn\'t use (a round can\'t go below 0).', 'Bonuses: 10 for the longest word and 10 for the most words (no bonus if tied).'] },
+      { h: 'How to win', p: 'After 8 rounds, the highest total wins.' }
+    ],
+    links: [['Quiddler rules (UltraBoardGames)', 'https://www.ultraboardgames.com/quiddler/game-rules.php']]
+  },
+
+  'monopoly-deal': {
+    sections: [
+      { h: 'What you need', p: 'The Monopoly Deal deck: property, wild property, money, rent and action cards. 2–5 players.' },
+      { h: 'Setup', p: 'Deal 5 cards each. The youngest player goes first.' },
+      { h: 'On your turn', li: ['Draw 2 cards (5 if your hand was empty).', 'Play up to 3 cards: money and action cards into your bank, properties in front of you, or action cards for their effect.', 'End with no more than 7 cards in your hand.'] },
+      { h: 'Rent and paying', li: ['Rent cards charge rent for one of your property colors. The more properties you have in that color, the higher the rent.', 'The player paying chooses what to pay with: money, banked cards or properties. Cards in your hand don\'t count.', 'If you can\'t pay it all, pay what you have. You\'re never out of the game.'] },
+      { h: 'Action cards', li: ['Deal Breaker: take a whole finished set from a player.', 'Sly Deal: steal one property (not from a finished set).', 'Forced Deal: swap one of your properties for one of theirs (not from a finished set).', 'Just Say No: cancel an action played on you. Another Just Say No cancels that.', 'Debt Collector: one player pays you $5M.', 'It\'s My Birthday: everyone pays you $2M.', 'Pass Go: draw 2 more cards.', 'Double the Rent: play with a rent card to double it.', 'House and Hotel: add to a finished set for more rent (not railroads or utilities).'] },
+      { h: 'How to win', p: 'The first player with 3 finished property sets of different colors wins.' }
+    ],
+    links: [['Monopoly Deal rules (Official Game Rules)', 'https://officialgamerules.org/game-rules/monopoly-deal/']]
+  },
+
+  'sequence': {
+    sections: [
+      { h: 'What you need', p: 'The Sequence board, 104 cards and chips in 3 colors. 2–12 players; with more than 3, play in teams (up to 3 teams).' },
+      { h: 'Setup', p: 'Deal cards: 7 each with 2 players, 6 with 3–4, 5 with 6, 4 with 8–9, 3 with 10–12.' },
+      { h: 'On your turn', li: ['Play a card from your hand and put a chip on one of the two matching spaces on the board.', 'Draw a card.', 'If both spaces for a card are already covered, it\'s a dead card: show it, discard it and draw a new one.'] },
+      { h: 'Jacks', li: ['Two-eyed Jacks are wild: put your chip on any open space.', 'One-eyed Jacks remove one opponent\'s chip (not one in a finished Sequence).'] },
+      { h: 'Making a Sequence', li: ['A Sequence is 5 of your chips in a row: across, up and down, or diagonal.', 'The 4 corners are free spaces that count for everyone.', 'No coaching your teammates!'] },
+      { h: 'How to win', p: 'With 2 players or 2 teams, make 2 Sequences. With 3 players or teams, make 1.' }
+    ],
+    links: [['Sequence rules (UltraBoardGames)', 'https://www.ultraboardgames.com/sequence/game-rules.php']]
+  },
+
+  'spot-it': {
+    sections: [
+      { h: 'What you need', p: '55 round cards with 8 symbols each. Any two cards share exactly one matching symbol. 2–8 players.' },
+      { h: 'How it works', p: 'Find the one symbol two cards have in common and call it out first. The box has several mini-games. Here are the main ones.' },
+      { h: 'The Tower', p: 'Everyone starts with one card face down; the rest of the deck sits face up in the middle. Spot the match between your top card and the middle card, call it, and take the middle card onto your pile. When the deck is gone, most cards wins.' },
+      { h: 'The Well', p: 'Deal out all the cards except one, which goes face up in the middle. Spot the match between your top card and the middle card, call it, and put your card on the middle. First to get rid of all their cards wins.' },
+      { h: 'Hot Potato', p: 'Each round, everyone gets one card. Spot a match with another player\'s card and put yours on top of theirs. The player stuck with all the cards loses the round.' },
+      { h: 'Poisoned Gift', p: 'Like The Tower, but you give the middle card to another player when you spot a match with their card. When the deck runs out, fewest cards wins.' },
+      { h: 'Triplet', p: 'Lay out 9 cards. Find a symbol on 3 of them, call it, and take those 3. Most cards wins.' }
+    ],
+    links: [['Spot It! mini-games (UltraBoardGames)', 'https://www.ultraboardgames.com/spot-it/mini-games.php']]
+  },
+
+  'blink': {
+    sections: [
+      { h: 'What you need', p: 'The Blink deck: 60 cards with shapes in different colors and counts. 2 players.' },
+      { h: 'Setup', li: ['Split the deck into two equal draw piles, one per player.', 'Each player puts their top card face down in the middle, side by side.', 'Each player draws a hand of 3.'] },
+      { h: 'Playing (no turns, as fast as you can)', li: ['Flip the two middle cards at the same time.', 'Play a card from your hand onto either middle pile if it matches the top card by color, shape or number of shapes.', 'One card at a time, with one hand. Refill your hand to 3 from your draw pile.', 'If nobody can play, each player flips their top draw-pile card onto a middle pile.'] },
+      { h: 'How to win', p: 'The first player to get rid of all their cards (hand and draw pile) wins.' }
+    ],
+    links: [['Blink rules (UltraBoardGames)', 'https://www.ultraboardgames.com/blink/game-rules.php']]
+  },
+
+  'cover-your-assets': {
+    sections: [
+      { h: 'What you need', p: 'The Cover Your Assets deck: asset cards (each with a dollar value printed on it) and Gold and Silver wild cards. 2–6 players.' },
+      { h: 'Setup', p: 'Deal 5 cards each with 2–3 players, 4 with 4–6. Flip one card to start the discard pile.' },
+      { h: 'On your turn (do one thing)', li: ['Make a pair from your hand (two matching assets, or one asset and a wild) and put it on your stack.', 'Make a pair with the top discard and a matching card from your hand.', 'Challenge another player for their top set (see below).', 'Discard one card.', 'Then draw back up to your hand size.'] },
+      { h: 'Your stack', li: ['Each new pair goes on top of your stack, turned crosswise.', 'Only the top pair can be stolen. Your bottom pair is always safe.'] },
+      { h: 'Challenges', li: ['To steal, show a card that matches another player\'s top pair (or a wild).', 'They can answer with a matching card or wild, and you go back and forth.', 'Whoever plays the last card wins the pair and every card played, and puts it on their stack.', 'Two wilds can never be a pair by themselves.'] },
+      { h: 'How to win', p: 'When the draw pile runs out, keep playing until hands are empty. Add up the value of your stack. First to $1,000,000 over several rounds wins.' }
+    ],
+    links: [['Cover Your Assets rules (UltraBoardGames)', 'https://www.ultraboardgames.com/cover-your-assets/game-rules.php']]
+  },
+
+  'unstable-unicorns': {
+    sections: [
+      { h: 'What you need', p: 'The Unstable Unicorns deck. 2–8 players.' },
+      { h: 'Setup', li: ['Everyone puts one Baby Unicorn in their Stable (the cards in front of you). The other Baby Unicorns go in the Nursery.', 'Deal 5 cards each.', 'The player wearing the most colors goes first.'] },
+      { h: 'On your turn', li: ['1. Beginning: use any "beginning of turn" effects in your Stable.', '2. Draw 1 card.', '3. Action: play 1 card, or draw 1 more card.', '4. End: discard down to 7 cards.'] },
+      { h: 'The cards', li: ['Basic Unicorns: no powers. Magical Unicorns: special powers.', 'Magic: one-time effect, then discard.', 'Upgrades help a Stable; Downgrades hurt one.', 'Instant cards (like Neigh): play any time to stop another card from being played.', 'Baby Unicorns only come out from other cards.'] },
+      { h: 'How to win', p: 'Be the first with 7 Unicorns in your Stable (6 with 6–8 players). Baby Unicorns count. If the deck runs out, the game ends with no winner, unless your family reshuffles.' }
+    ],
+    links: [['Unstable Unicorns rules (UltraBoardGames)', 'https://www.ultraboardgames.com/unstable-unicorns/game-rules.php']]
+  },
+
+  'here-to-slay': {
+    sections: [
+      { h: 'What you need', p: 'Hero, Item, Magic, Modifier and Challenge cards, 6 Party Leaders, 15 Monsters and 2 dice. 2–6 players.' },
+      { h: 'Setup', p: 'Everyone picks a Party Leader. Deal 5 cards each. Turn 3 Monsters face up.' },
+      { h: 'On your turn: 3 action points', li: ['Draw a card: 1 point.', 'Play a Hero, Item or Magic card: 1 point.', 'Roll to use a Hero\'s ability: 1 point (you get one free roll when you first play a Hero).', 'Attack a Monster: 2 points.', 'Discard your hand and draw 5: 3 points.', 'Modifier and Challenge cards are free.'] },
+      { h: 'Rolling and challenges', li: ['Roll 2 dice. Meet the number on the Hero to use its ability.', 'Modifier cards add or subtract from anyone\'s roll.', 'When someone plays a Hero, Item or Magic card, you can challenge it: both roll, and if you tie or beat them, their card is discarded.'] },
+      { h: 'Monsters', p: 'Your party must meet the Monster\'s requirements to attack it. Roll its slay number or higher to slay it and keep its power. Roll its fight-back number and you take its penalty.' },
+      { h: 'How to win', p: 'Slay 3 Monsters, or end your turn with heroes of all 6 classes in your party (your Party Leader counts).' }
+    ],
+    links: [['Here to Slay rules (Official Game Rules)', 'https://officialgamerules.org/game-rules/here-to-slay/']]
+  },
+
+  'fluxx': {
+    sections: [
+      { h: 'What you need', p: 'A Fluxx deck. 2–6 players.' },
+      { h: 'Setup', p: 'Put the Basic Rules card in the middle: draw 1, play 1. Deal 3 cards each. There\'s no Goal at the start.' },
+      { h: 'On your turn', p: 'Draw as many cards as the rules say, then play as many as the rules say. Then follow any Hand Limit or Keeper Limit in play.' },
+      { h: 'The cards', li: ['New Rule: changes the rules right away (like Draw 3 or Play 2). If it clashes with an older rule, the old one goes.', 'Goal: what it takes to win. A new Goal replaces the old one.', 'Keeper: put it in front of you. Most Goals need certain Keepers.', 'Action: do it once, then discard.', 'Some versions have Creepers, which usually stop you from winning.'] },
+      { h: 'How to win', p: 'Whoever matches the current Goal wins right away, even on someone else\'s turn.' }
+    ],
+    links: [['Fluxx rules (UltraBoardGames)', 'https://www.ultraboardgames.com/fluxx/game-rules.php']]
+  },
+
+  'bang': {
+    sections: [
+      { h: 'What you need', p: 'Role cards, character cards, the play deck and bullet tokens. 4–7 players.' },
+      { h: 'Roles', li: ['Sheriff (face up): wipe out the Outlaws and the Renegade.', 'Deputies (secret): help the Sheriff.', 'Outlaws (secret): kill the Sheriff.', 'Renegade (secret): be the last one alive.', '4 players: Sheriff, Renegade, 2 Outlaws. 5: add a Deputy. 6: 3 Outlaws. 7: 2 Deputies and 3 Outlaws.'] },
+      { h: 'Setup', p: 'Everyone gets a character with a special ability. Your life (bullets) is shown on your character; the Sheriff gets 1 extra. Draw as many cards as your life.' },
+      { h: 'On your turn', li: ['Draw 2 cards.', 'Play any cards you like, but only 1 BANG! per turn.', 'Discard down to your current life.'] },
+      { h: 'Key cards', li: ['BANG!: shoot a player within your weapon\'s range. They lose 1 life unless they play a Missed!', 'Beer: get 1 life back.', 'Weapons let you shoot farther. Mustang makes you harder to reach. Scope lets you reach farther.'] },
+      { h: 'Getting knocked out', li: ['At 0 life you\'re out (unless you play a Beer right then). Show your role.', 'Whoever knocks out an Outlaw draws 3 cards.', 'If the Sheriff knocks out a Deputy, the Sheriff loses all their cards.'] },
+      { h: 'How to win', li: ['Sheriff and Deputies win when all Outlaws and the Renegade are gone.', 'Outlaws win when the Sheriff dies.', 'The Renegade wins only by being the last player standing.'] }
+    ],
+    links: [['BANG! rules (UltraBoardGames)', 'https://www.ultraboardgames.com/bang/game-rules.php']]
+  },
+
+  'throw-throw-burrito': {
+    sections: [
+      { h: 'What you need', p: 'The cards and 2 squishy burritos. 2–6 players.' },
+      { h: 'Playing (no turns)', li: ['Everyone keeps a hand of 5 cards and plays at the same time.', 'Draw from your own pile, and pass cards you don\'t want face down onto the pile of the player to your left.', 'Collect sets of 3 matching cards.'] },
+      { h: 'Scoring sets', li: ['A set of 3 matching cards: 1 point.', 'A set of 3 burrito cards: 2 points, and it starts a battle.'] },
+      { h: 'Burrito battles', li: ['Brawl: the players on your left and right grab burritos and throw at each other.', 'War: everyone except you grabs a burrito and throws.', 'Duel: pick two players. They stand back to back, step apart, turn and throw.', 'Get hit and you take a bruise: −1 point.'] },
+      { h: 'How to win', p: 'Count points after each round. Most points after 2 rounds wins. A tie is settled with a sudden-death duel.' }
+    ],
+    note: 'Rule sites disagree on whether War has one loser or two, and whether you win by total points or by winning rounds. Check your rulebook.',
+    links: [['Throw Throw Burrito rules (GameRules.com)', 'https://gamerules.com/rules/throw-throw-burrito/']]
+  },
+
+  'jaipur': {
+    sections: [
+      { h: 'What you need', p: '55 cards (goods and camels), goods tokens, bonus tokens, a camel token and 3 Seals of Excellence. 2 players.' },
+      { h: 'Setup', li: ['Put 3 camels face up in the market. Deal 5 cards each, then add 2 more cards to the market so it has 5.', 'Move any camels in your hand into a herd in front of you.'] },
+      { h: 'On your turn: take OR sell', li: ['Take: one good from the market, or all the camels, or swap several of your cards (goods or camels) for the same number of market goods. Refill the market.', 'Sell: sell any number of one type of good. Take that many tokens, starting with the most valuable.', 'Diamonds, gold and silver must be sold at least 2 at a time.', 'Hand limit: 7 cards (camels don\'t count).'] },
+      { h: 'Bonuses', li: ['Selling 3 cards earns a 3-card bonus token, 4 cards a 4-card bonus, 5 or more a 5-card bonus.', 'Most camels at the end of the round: 5 points.'] },
+      { h: 'End of a round', p: 'A round ends when 3 types of goods tokens are gone, or the market can\'t be refilled. The richer player wins a Seal of Excellence.' },
+      { h: 'How to win', p: 'First to 2 Seals of Excellence wins.' }
+    ],
+    links: [['Jaipur rules (UltraBoardGames)', 'https://www.ultraboardgames.com/jaipur/game-rules.php']]
+  },
+
+  'snap': {
+    sections: [
+      { h: 'What you need', p: 'A standard deck (or a Snap deck). 2 or more players.' },
+      { h: 'Setup', p: 'Deal out all the cards face down. Don\'t look.' },
+      { h: 'Playing', li: ['Take turns flipping your top card face up onto your own pile.', 'When the top cards of any two piles match (same number or picture), shout "Snap!"', 'The first to shout wins both piles and puts them under their stack.', 'Shout Snap when there\'s no match and you give each other player a card.'] },
+      { h: 'How to win', p: 'The player who wins all the cards wins.' }
+    ]
+  },
+
+  'memory': {
+    sections: [
+      { h: 'What you need', p: 'A set of matching pairs (a Memory game, or a deck of cards using pairs). 1 or more players.' },
+      { h: 'Setup', p: 'Shuffle the cards and lay them all face down in a grid.' },
+      { h: 'On your turn', li: ['Flip any 2 cards face up.', 'If they match, keep the pair and go again.', 'If they don\'t, flip them back face down where they were. Next player\'s turn.', 'Try to remember where everything is!'] },
+      { h: 'How to win', p: 'When all pairs are found, the player with the most pairs wins.' }
+    ]
   }
 };
