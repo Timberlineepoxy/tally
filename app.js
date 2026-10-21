@@ -398,7 +398,7 @@
     else if (c.s === 'sheet') body = playSheet(g, r);
     else if (c.s === 'counter') body = playCounter(g, r);
     else body = playWins(g, r);
-    return head + (c.laps ? lapBar(g, r) : '') + body;
+    return head + (c.laps ? lapBar(g, r) : '') + body + `<button class="calcfab" data-act="calc" aria-label="Calculator">${calcIcon}</button>`;
   }
   function lapBar(g, r) {
     const n = g.cfg.laps;
@@ -496,6 +496,8 @@
     const el = $('#sheet'); if (!SH) { el.hidden = true; return; }
     el.hidden = false;
     el.querySelector('.panel').innerHTML = `<div class="grab"></div>` + SH.draw();
+    const x = SH.calcSet && el.querySelector('.sh-h [data-sh=close]');
+    if (x) x.insertAdjacentHTML('beforebegin', `<button class="ico calcmini" data-calc aria-label="Calculator">${calcIcon}</button>`);
   }
 
   // Expression pad: "20+20+50" style entry so you can count a hand card by card.
@@ -520,11 +522,12 @@
   function addChip(e, v) { if (v < 0 && !(e.s)) { e.neg = true; e.s = String(-v); e.tail = true; return; } e.s = (e.s && !e.s.endsWith('+') ? e.s + '+' : (e.s || '')) + Math.abs(v); e.tail = true; }
 
   // Round entry for 'rounds' style
-  function roundSheet(g, ri, focus) {
+  function roundSheet(g, ri, focus, pre) {
     const c = g.cfg, ids = g.seats.map(s => s.id), editing = ri != null, rd = editing ? g.rounds[ri] : null;
     const E = { cur: focus ? ids.indexOf(focus) : 0, vals: {}, ph: Object.assign({}, rd && rd.ph || {}) };
     ids.forEach(id => { const v = rd ? rd.v[id] : null; E.vals[id] = v != null && v !== 0 ? { s: String(Math.abs(v)), neg: v < 0 } : { s: rd ? '0' : '', neg: false }; });
     if (E.cur < 0) E.cur = 0;
+    if (pre != null && !editing) E.vals[ids[E.cur]] = { s: String(Math.abs(pre)), neg: pre < 0 };
     const saveIt = () => {
       snap(g);
       const v = {}; ids.forEach(id => v[id] = padVal(E.vals[id]) || 0);
@@ -533,6 +536,7 @@
       g.updated = Date.now(); save(); closeSheet(); render(); checkOver(g);
     };
     openSheet({
+      calcSet: v => { E.vals[ids[E.cur]] = { s: String(Math.abs(v)), neg: v < 0 }; drawSheet(); },
       E, draw: () => {
         const cur = ids[E.cur], s = g.seats[E.cur];
         return `<div class="sh-h"><b>${esc(roundLabel(g, editing ? ri : g.rounds.length))}</b>${editing ? `<button class="link danger" data-sh="del">Delete round</button>` : ''}<button class="ico" data-sh="close" aria-label="Close">✕</button></div>
@@ -556,9 +560,10 @@
     });
   }
   // Round entry for 'winner' style
-  function winnerSheet(g, ri) {
+  function winnerSheet(g, ri, pre) {
     const c = g.cfg, editing = ri != null, rd = editing ? g.rounds[ri] : null;
     const E = { w: rd ? rd.w : null, e: rd && rd.w ? { s: String(rd.v[rd.w] || ''), neg: false } : { s: '', neg: false } };
+    if (pre && !editing) { E.w = pre.w; E.e = { s: String(Math.abs(pre.v)), neg: pre.v < 0 }; }
     const saveIt = () => {
       if (!E.w) { toast('Tap who went out first'); return; }
       snap(g); const v = {}; v[E.w] = padVal(E.e) || 0;
@@ -566,6 +571,7 @@
       g.updated = Date.now(); save(); closeSheet(); render(); checkOver(g);
     };
     openSheet({
+      calcSet: v => { E.e = { s: String(Math.abs(v)), neg: v < 0 }; drawSheet(); },
       draw: () => `<div class="sh-h"><b>${esc(roundLabel(g, editing ? ri : g.rounds.length))} · ${esc(c.wq || 'Who went out?')}</b>${editing ? `<button class="link danger" data-sh="del">Delete</button>` : ''}<button class="ico" data-sh="close" aria-label="Close">✕</button></div>
         <div class="who">${g.seats.map(p => `<button class="${E.w === p.id ? 'sel' : ''}" data-sh="w" data-id="${p.id}" style="--pc:${p.color}">${av(p, 24)}<span>${esc(p.name)}</span></button>`).join('')}</div>
         ${padShow(E.e, c.wl || 'Cards left in everyone else\'s hands')}
@@ -628,6 +634,7 @@
       if (!clear && c.cats.every((_, k) => g.seats.every(p => (g.cells[k] || {})[p.id] != null))) setTimeout(() => showOver(g), 150);
     };
     openSheet({
+      calcSet: v => { E.s = String(Math.abs(v)); E.neg = v < 0; drawSheet(); },
       draw: () => {
         const v = padVal(E);
         return `<div class="sh-h"><b>${esc(cat.n)} · ${esc(s.name)}</b><button class="ico" data-sh="close" aria-label="Close">✕</button></div>
@@ -650,6 +657,7 @@
   function counterPad(g, id) {
     const s = g.seats.find(x => x.id === id), E = { s: '', neg: false };
     openSheet({
+      calcSet: v => { E.s = String(Math.abs(v)); E.neg = v < 0; drawSheet(); },
       draw: () => `<div class="sh-h"><b>${esc(s.name)} · ${fmt(g.cnt[id])}</b><button class="ico" data-sh="close" aria-label="Close">✕</button></div>
         ${padShow(E, 'Amount')}
         <div class="keys">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(k => `<button data-pad="${k}">${k}</button>`).join('')}<button data-pad="plus" class="plus">+ add</button><button data-pad="0">0</button><button data-pad="back">⌫</button></div>
@@ -1135,8 +1143,109 @@
     go('custom');
   }
 
+  // ───────── CALCULATOR ─────────
+  // An adding-machine calculator: every number you enter prints onto a paper tape,
+  // so you can check your adding. Opened from the floating button on the play screen,
+  // or from the 🧮 button on any score pad (then "Use" drops the answer into that pad).
+  const tapes = {};
+  let CS = null, calcTarget = null, calcGame = null;
+  const cfmt = n => (n < 0 ? '−' : '') + Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 6 });
+  const tidy = n => Math.round(n * 1e9) / 1e9;
+  function calcApply(a, op, b) {
+    if (op === '+') return tidy(a + b);
+    if (op === '−') return tidy(a - b);
+    if (op === '×') return tidy(a * b);
+    if (op === '÷') return b === 0 ? null : tidy(a / b);
+    return b;
+  }
+  function calcValue() { return CS.cur !== '' && CS.cur !== '-' ? Number(CS.cur) : (CS.acc ?? 0); }
+  function openCalc(g, target) {
+    calcGame = g; calcTarget = target || null;
+    const key = g ? g.id : 'any';
+    CS = tapes[key] = tapes[key] || { tape: [], cur: '', acc: null, op: null, eq: false };
+    const el = $('#calc'); el.hidden = false; drawCalc();
+    const t = el.querySelector('.tape'); if (t) t.scrollTop = t.scrollHeight;
+  }
+  function closeCalc() { const el = $('#calc'); if (el) el.hidden = true; calcTarget = null; }
+  function drawCalc() {
+    const el = $('#calc'); if (el.hidden) return;
+    const v = calcValue(), pending = CS.op && CS.acc != null ? cfmt(CS.acc) + ' ' + CS.op : '';
+    const lines = CS.tape.map((l, i) => l.total != null
+      ? `<div class="tl tot ${i === CS.tape.length - 1 ? 'new' : ''}"><span>=</span><b>${cfmt(l.total)}</b></div>`
+      : `<div class="tl ${i === CS.tape.length - 1 ? 'new' : ''}"><span>${l.op || ''}</span><b>${cfmt(l.n)}</b></div>`).join('');
+    const g = calcGame, c = g && g.cfg;
+    let send = '';
+    if (calcTarget) send = `<button class="cuse" data-ck="use">Use ${cfmt(Math.round(v))} <span>→</span></button>`;
+    else if (g && ['rounds', 'winner', 'counter'].includes(c.s)) {
+      send = `<div class="csend"><span class="muted small">Add ${cfmt(Math.round(v))} to</span><div class="cchips">${g.seats.map(s => `<button data-ck="to" data-id="${s.id}" style="--pc:${s.color}">${av(s, 18)}${esc(s.name)}</button>`).join('')}</div></div>`;
+    }
+    el.querySelector('.calcpanel').innerHTML = `
+      <div class="ctop"><b>🧮 Calculator</b><button class="link" data-ck="cleartape">Clear tape</button><button class="ico" data-ck="close" aria-label="Close calculator">✕</button></div>
+      <div class="tape" aria-label="Paper tape">${lines || '<div class="tl empty">Your adding prints here</div>'}</div>
+      <div class="cdisp"><small>${esc(pending)}</small><span>${CS.cur !== '' ? esc(CS.cur.replace('-', '−')) : cfmt(v)}</span></div>
+      <div class="ckeys">
+        <button data-ck="C" class="fn">C</button><button data-ck="back" class="fn" aria-label="Delete">⌫</button><button data-ck="neg" class="fn">±</button><button data-ck="÷" class="op">÷</button>
+        ${[7, 8, 9].map(n => `<button data-ck="${n}">${n}</button>`).join('')}<button data-ck="×" class="op">×</button>
+        ${[4, 5, 6].map(n => `<button data-ck="${n}">${n}</button>`).join('')}<button data-ck="−" class="op">−</button>
+        ${[1, 2, 3].map(n => `<button data-ck="${n}">${n}</button>`).join('')}<button data-ck="+" class="op">+</button>
+        <button data-ck="0" class="zero">0</button><button data-ck=".">.</button><button data-ck="=" class="eq">=</button>
+      </div>
+      ${send}`;
+    const t = el.querySelector('.tape'); if (t) t.scrollTop = t.scrollHeight;
+  }
+  function calcPress(k, btn) {
+    const S = CS;
+    if (/^\d$/.test(k)) {
+      if (S.eq) { S.acc = null; S.eq = false; }
+      if (S.cur.replace(/[-.]/g, '').length >= 10) return;
+      S.cur = S.cur === '0' ? k : S.cur === '-0' ? '-' + k : S.cur + k;
+    } else if (k === '.') {
+      if (S.eq) { S.acc = null; S.eq = false; }
+      if (!S.cur.includes('.')) S.cur = (S.cur === '' || S.cur === '-' ? S.cur + '0' : S.cur) + '.';
+    } else if (k === 'back') { S.cur = S.cur.slice(0, -1); }
+    else if (k === 'neg') {
+      if (S.cur !== '') S.cur = S.cur.startsWith('-') ? S.cur.slice(1) : '-' + S.cur;
+      else if (S.acc != null) { S.acc = -S.acc; }
+    } else if (k === 'C') { S.cur = ''; S.acc = null; S.op = null; S.eq = false; }
+    else if (k === 'cleartape') { S.tape = []; S.cur = ''; S.acc = null; S.op = null; S.eq = false; }
+    else if (['+', '−', '×', '÷'].includes(k)) {
+      if (S.cur !== '' && S.cur !== '-') {
+        const n = Number(S.cur);
+        if (S.acc == null || S.eq) { S.acc = n; S.tape.push({ op: '', n }); }
+        else { const r = calcApply(S.acc, S.op, n); if (r == null) { toast('Can\'t divide by zero'); return; } S.tape.push({ op: S.op, n }); S.acc = r; }
+        S.cur = '';
+      } else if (S.acc == null) return;
+      S.op = k; S.eq = false;
+    } else if (k === '=') {
+      if (S.cur === '' || S.cur === '-') { if (S.acc == null) return; S.tape.push({ total: S.acc }); S.eq = true; S.op = null; }
+      else {
+        const n = Number(S.cur);
+        if (S.acc == null || !S.op) { S.acc = n; S.tape.push({ op: '', n }); }
+        else { const r = calcApply(S.acc, S.op, n); if (r == null) { toast('Can\'t divide by zero'); return; } S.tape.push({ op: S.op, n }); S.acc = r; }
+        S.tape.push({ total: S.acc }); S.cur = ''; S.op = null; S.eq = true;
+      }
+      if (S.tape.length > 200) S.tape.splice(0, S.tape.length - 200);
+    } else if (k === 'use') {
+      const v = Math.round(calcValue()), fn = calcTarget; closeCalc(); if (fn) fn(v); return;
+    } else if (k === 'to') {
+      const v = Math.round(calcValue()), g = calcGame, id = btn.dataset.id; closeCalc();
+      if (!g) return;
+      if (g.cfg.s === 'counter') bump(g, id, v);
+      else if (g.cfg.s === 'winner') winnerSheet(g, null, { w: id, v });
+      else roundSheet(g, null, id, v);
+      return;
+    } else if (k === 'close') { closeCalc(); return; }
+    if (navigator.vibrate) navigator.vibrate(6);
+    drawCalc();
+  }
+  const calcIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8 6.5h8M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h.01M12 18h.01M15.5 18h.01"/></svg>';
+
   // ───────── events ─────────
   document.addEventListener('click', e => {
+    const ck = e.target.closest('[data-ck]');
+    if (ck) { e.preventDefault(); calcPress(ck.dataset.ck, ck); return; }
+    if (e.target.id === 'calc') { closeCalc(); return; }
+    if (e.target.closest('[data-calc]') && SH && SH.calcSet) { openCalc(V.name === 'play' ? game(V.id) : null, SH.calcSet); return; }
     const sh = e.target.closest('[data-sh],[data-pad],[data-chip]');
     if (sh && SH && sh.closest('#sheet')) {
       e.preventDefault();
@@ -1178,6 +1287,7 @@
         if (d.laps) opt.laps = setup.laps || d.laps;
         startGame(d, seats, opt); break;
       }
+      case 'calc': openCalc(g); break;
       case 'undo': if (g) doUndo(g); break;
       case 'menu': if (g) gameMenu(g); break;
       case 'addround': if (g) (g.cfg.s === 'winner' ? winnerSheet(g) : g.cfg.s === 'calc' ? calcSheet(g) : roundSheet(g)); break;
